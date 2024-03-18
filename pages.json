@@ -319,26 +319,26 @@
 		"list": [{
 				"pagePath": "pages/index/index",
 				"iconPath": "static/img/tabbar/home_select.png",
-				"selectedIconPath": "static/img/tabbar/home_select.png"
-				// "text": "home"
+				"selectedIconPath": "static/img/tabbar/home_select.png",
+				"text": "home"
 			},
 			{
 				"pagePath": "pages/join/join",
 				"iconPath": "static/img/tabbar/join_select.png",
-				"selectedIconPath": "static/img/tabbar/join_select.png"
-				// "text": "join"
+				"selectedIconPath": "static/img/tabbar/join_select.png",
+				"text": "join"
 			},
 			{
 				"pagePath": "pages/classification/classification",
 				"iconPath": "static/img/tabbar/classification_select.png",
-				"selectedIconPath": "static/img/tabbar/classification_select.png"
-				// "text": "classification"
+				"selectedIconPath": "static/img/tabbar/classification_select.png",
+				"text": "classification"
 			},
 			{
 				"pagePath": "pages/me/me",
 				"iconPath": "static/img/tabbar/me_select.png",
-				"selectedIconPath": "static/img/tabbar/me_select.png"
-				// "text": "me"
+				"selectedIconPath": "static/img/tabbar/me_select.png",
+				"text": "me"
 			}
 		]
 	},
