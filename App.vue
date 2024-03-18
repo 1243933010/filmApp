@@ -125,8 +125,12 @@ export default {
 
 <style lang="less">
 /*每个页面公共css */
+* {
+	box-sizing: border-box;
+}
 uni-page-body {
-	height: 100%;
+	overflow: hidden;
+	height: 100vh;
 }
 input {
 	margin: 0;
@@ -146,11 +150,17 @@ body {
 	font-size: 30rpx;
 	width: 100vw;
 	line-height: 1;
+	height: 100%;
 
 	.page-scroll {
-		padding: 300rpx 45rpx;
+		overflow-y: auto;
 		height: 100%;
+		width: 100%;
 		background: url("@/static/image/pageBg.png") no-repeat center center / cover;
+		
+		.page-con {
+			padding: 45rpx;
+		}
 
 		&.has-tabbar {
 			// #ifdef H5

@@ -1,54 +1,58 @@
 <template>
-	<view class="profix-page-container login-page">
-		<!-- <customHeader style="z-index: 0" /> -->
-		<customHeader style="position: fixed; top: 0; width: 100%" />
-		<view class="login-scroll page-scroll">
-			<view class="login-tit">
-				<text>Movie software</text>
-			</view>
-
-			<view class="form-container">
-				<!-- TODO -->
-				<label for="account">邮箱</label>
-				<view class="input-con account">
-					<view class="inp">
-						<!-- TODO -->
-						<input type="email" name="account" v-model="formData.email" placeholder="请输入邮箱" />
-					</view>
+	<view class="profix-page-container email-login-page">
+		<scroll-view :scroll-y="true" :scroll-x="false" @scroll="scrollHandle" class="page-scroll">
+			<!-- <customHeader style="z-index: 0" /> -->
+			<customHeader style="position: fixed; top: 0; width: 100%" />
+			<view class="email-login-scroll page-con">
+				<view class="login-tit">
+					<text>Movie software</text>
 				</view>
 
-				<!-- TODO -->
-				<label for="pwd">密码</label>
-				<view class="input-con password">
-					<view class="inp">
-						<!-- TODO -->
-						<input type="text" name="pwd" v-model="formData.password" :password="pwdType" placeholder="请输入密码" />
-					</view>
-					<view class="eye-icon" :class="{ close: pwdType }" @click="handleEye"></view>
-				</view>
-				<view class="other">
-					<view class="view1" @click="goPage('/pages/login/region')">
-						<!-- TODO -->
-						<text>邮箱注册</text>
-					</view>
-					<view class="view1" @click="goPage('/pages/login/forgetEmailPassword')">
-						<!-- TODO -->
-						<text>忘记密码</text>
-					</view>
-				</view>
-
-				<!-- <label class="remember-me">
-					<checkbox  class="radio" @change="changeRadio" value="1" checked="true" color="#FD862C" />
-					{{ $t("login.radioText") }}
-				</label> -->
-				<view class="btn-list">
+				<view class="form-container">
 					<!-- TODO -->
-					<button class="button login-btn" :disabled="!(formData.email && formData.password)" @click="loginHandle">登录</button>
+					<label for="account">邮箱</label>
+					<view class="input-con account">
+						<view class="inp">
+							<!-- TODO -->
+							<input type="email" name="account" v-model="formData.email" placeholder="请输入邮箱" />
+						</view>
+					</view>
+
 					<!-- TODO -->
-					<button class="button region-btn" @click="goPage(`/pages/login/emailLogin`)">邮箱登录</button>
+					<label for="pwd">密码</label>
+					<view class="input-con password">
+						<view class="inp">
+							<!-- TODO -->
+							<input type="text" name="pwd" v-model="formData.password" :password="pwdType" placeholder="请输入密码" />
+						</view>
+						<view class="eye-icon" :class="{ close: pwdType }" @click="handleEye"></view>
+					</view>
+					<view class="other">
+						<view class="view1" @click="goPage('/pages/login/region')">
+							<!-- TODO -->
+							<text>邮箱注册</text>
+						</view>
+						<view class="view1" @click="goPage('/pages/login/forgetEmailPassword')">
+							<!-- TODO -->
+							<text>忘记密码</text>
+						</view>
+					</view>
+
+					<!-- <label class="remember-me">
+						<checkbox  class="radio" @change="changeRadio" value="1" checked="true" color="#FD862C" />
+						{{ $t("login.radioText") }}
+					</label> -->
+					<view class="btn-list">
+						<!-- TODO -->
+						<button class="button login-btn" :disabled="!(formData.email && formData.password)" @click="loginHandle">登录</button>
+						<!-- TODO -->
+						<button class="button region-btn" @click="goPage(`/pages/login/emailVerificationLogin`)">邮箱登录</button>
+						<!-- TODO -->
+						<button class="button region-btn" @click="goPage(`/pages/login/index`)">手机号登录</button>
+					</view>
 				</view>
 			</view>
-		</view>
+		</scroll-view>
 	</view>
 </template>
 
@@ -77,19 +81,21 @@
 			};
 		},
 		methods: {
-			goOther(url) {
+			scrollHandle(event) {
+				const { scrollTop } = event.detail;
+				if(scrollTop >= 50) {
+					this.headerBg = true;
+				}else {
+					this.headerBg = false;
+				}
+			},
+			goPage(url) {
 				uni.navigateTo({
 					url
 				})
 			},
 			handleEye() {
 				this.pwdType = !this.pwdType;
-			},
-			goRegion() {
-				// 去往注册页面
-				uni.navigateTo({
-					url: "/pages/login/region",
-				});
 			},
 			loginHandle() {
 				$request("emailLogin", this.formData).then(res => {
@@ -127,8 +133,10 @@
 <style lang="less" scoped>
 	@import "../../static/less/variable.less";
 
-	.login-page {
-		.login-scroll {
+	.email-login-page {
+		.email-login-scroll {
+			padding-top: 300rpx;
+			padding-bottom: 300rpx;
 			display: flex;
 			flex-direction: column;
 			align-items: center;
@@ -158,16 +166,15 @@
 
 				.input-con {
 					margin-top: 28rpx;
+					border-radius: 10rpx;
+					padding: 30rpx 34rpx;
 
 					.df(center, flex-start);
+					.glassBg();
 
 					.inp {
-						border-radius: 10rpx;
-						padding: 30rpx 34rpx;
 						min-width: 10%;
 						flex-grow: 1;
-						
-						.glassBg();
 
 						input {
 							line-height: 1.4;

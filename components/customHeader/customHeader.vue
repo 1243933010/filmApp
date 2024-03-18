@@ -11,7 +11,7 @@
 				<picker cancel-text="取消1" confirm-text="确定1" @change="bindPickerChange" :value="index" :range="array">
 					<view class="header-select">
 						<image class="header-select-icon" :src="imgSrc" mode="widthFix"></image>
-						<image class="header-select-select" src="../../static/img/select_icon.png" mode="widthFix"></image>
+						<view class="header-select-select"></view>
 					</view>
 				</picker>
 			</view>
@@ -74,6 +74,25 @@ export default {
 
 .page {
 	width: 100%;
+	transition: background-color .35s ease-in-out;
+	
+	&.has-bg {
+		background-color: #fff;
+
+.image-width {
+	padding-top: 44rpx;
+	width: 100%;
+	background-color: transparent;
+
+	.header {
+		.header-select {
+			.header-select-select {
+				border-top-color: #000;
+			}
+		}
+	}
+}
+	}
 }
 
 .image-width {
@@ -116,9 +135,11 @@ export default {
 			}
 
 			.header-select-select {
-				width: 19rpx;
-				height: 12rpx;
-				margin-left: 9rpx;
+				margin-left: 15rpx;
+				margin-top: 14rpx;
+				border: 12rpx solid transparent;
+				border-top-color: #fff;
+				transition: border-color .35s ease-in-out;
 			}
 		}
 	}
