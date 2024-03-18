@@ -4,8 +4,9 @@
 @bodySize: 30rpx;
 @descSize: 26rpx;
 
-.df(@alignItems, @justifyContent) {
+.df(@alignItems: stretch, @justifyContent: flex-start, @direction: row) {
 	display: flex;
+	flex-direction: @direction;
 	align-items: @alignItems;
 	justify-content: @justifyContent;
 }
@@ -16,4 +17,33 @@
 	-webkit-line-clamp: @n;
 	-webkit-box-orient: vertical;
 	overflow: hidden;
+}
+
+.glassBg(@blur: 30rpx, @opacity: 0.3, @bgColor: #2F303B) {
+	position: relative;
+	overflow: hidden;
+	
+	&::after {
+		content: '';
+		position: absolute;
+		left: 0;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		filter: @blur;
+		opacity: @opacity;
+		background-color: @bgColor;
+	}
+}
+
+.btn-box(@radius: 0, @bgColor, @fontColor: #fff) {
+	border-radius: @radius;
+	padding: 32rpx 20rpx;
+	background: @bgColor;
+	font-size: @descSize;
+	color: @fontColor;
+	
+	&[disabled] {
+		background: #585858;
+	}
 }

@@ -1,43 +1,50 @@
 <template>
 	<view class="profix-page-container login-page">
-		<customHeader style="z-index: 0" />
 		<customHeader style="position: fixed; top: 0; width: 100%" />
 		<view class="login-scroll page-scroll">
-			<view class="logo pic">
-				<image src="../../static/img/logo.jpg" mode="widthFix" class="img"></image>
+			<view class="login-tit">
+				<text>Movie software</text>
 			</view>
 
 			<view class="form-container">
-				<view class="form-tit">PUTH GROUP</view>
-
-				<view class="input-con password email">
-					<view class="image-icon"></view>
+				<!-- TODO -->
+				<label for="account">邮箱</label>
+				<view class="input-con account">
 					<view class="inp">
-						<input type="text" v-model="formData.email" :placeholder="$t('login.email')" />
+						<!-- TODO -->
+						<input type="mail" name="account" v-model="formData.mail" placeholder="请输入邮箱" />
 					</view>
-
 				</view>
 
-				<view class="input-con password">
-					<view class="image-icon"></view>
+				<!-- TODO -->
+				<label for="pwd">邀请码</label>
+				<view class="input-con invite-code">
 					<view class="inp">
-						<input type="text" v-model="formData.password" :password="pwdType"
-							:placeholder="$t('login.pwdPlaceholder')" />
+						<!-- TODO -->
+						<input type="text" name="pwd" v-model="formData.inviteCode" placeholder="请输入密码" />
 					</view>
-					<view class="eye-icon" :class="{ close: pwdType }" @click="handleEye"></view>
-				</view>
-
-
-				<view class="btn-list">
-					<button class="button login-btn" :disabled="!(formData.email && formData.password)"
-						@click="loginHandle">{{ $t("login.btn1") }}</button>
-					<button class="button region-btn" @click="goRegion">{{ $t("region.btn1") }}</button>
+					
 				</view>
 				<view class="other">
-					<view class="view1" @click="goOther('/pages/login/emailVerificationLogin')">
-						<text>{{$t("login.logintype3")}}</text></view>
-					<view class="view1" @click="goOther('/pages/login/index')"><text>{{$t("login.logintype2")}}</text>
+					<view class="view1" @click="goPage('/pages/login/region')">
+						<!-- TODO -->
+						<text>邮箱注册</text>
 					</view>
+					<view class="view1" @click="goPage('/pages/login/forgetEmailPassword')">
+						<!-- TODO -->
+						<text>忘记密码</text>
+					</view>
+				</view>
+
+				<!-- <label class="remember-me">
+					<checkbox  class="radio" @change="changeRadio" value="1" checked="true" color="#FD862C" />
+					{{ $t("login.radioText") }}
+				</label> -->
+				<view class="btn-list">
+					<!-- TODO -->
+					<button class="button login-btn" :disabled="!(formData.mail && formData.inviteCode)" @click="loginHandle">登录</button>
+					<!-- TODO -->
+					<button class="button region-btn" @click="goPage(`/pages/login/index`)">账号密码登录</button>
 				</view>
 			</view>
 		</view>
@@ -59,44 +66,46 @@
 		data() {
 			return {
 				iStatusBarHeight: 0,
-				pwdType: true,
 				isMember: true,
 				formData: {
-					login_type: '1',
-					email: '',
-					password: "",
+					login_type: '0',
+					mail: undefined,
+					inviteCode: "",
+					country_code: "+975", // 手机前缀
 				},
 			};
 		},
+		mounted() {
+			console.log(uni.getLocale(), '---')
+			this.iStatusBarHeight = uni.getSystemInfoSync().statusBarHeight;
+
+			// 获取缓存里面的手机号和密码
+			this.formData.mail = uni.getStorageSync("mail");
+
+			// 在页面加载时监听返回事件
+			uni.$on("getPrefix", event => {
+				this.formData.country_code = "+" + event.prefix;
+			});
+		},
 		methods: {
-			goOther(url) {
+			goPage(url) {
 				uni.navigateTo({
 					url
 				})
 			},
-			handleEye() {
-				this.pwdType = !this.pwdType;
+			changeRadio(e) {
+				console.log(e);
 			},
-			goRegion() {
-				// 去往注册页面
-				uni.navigateTo({
-					url: "/pages/login/region",
-				});
-			},
+			openpNumberPicker() {},
 			loginHandle() {
-				$request("emailLogin", this.formData).then(res => {
-					let {
-						data,
-						code,
-						msg
-					} = res.data;
-					let {
-						token
-					} = data;
+				$request("login", this.formData).then(res => {
+					let { data, code, msg } = res.data;
+					let { token } = data;
+
 					if (code !== 0) {
 						// 登录失败
 						uni.showToast({
-							title: msg,
+							title: res.data.msg,
 							icon: "none",
 						});
 
@@ -105,11 +114,21 @@
 
 					// 登录成功
 					uni.setStorageSync("token", `Bearer ${token}`); // 存储token
-					setTimeout(() => {
-						uni.reLaunch({
-							url: "/pages/index/index",
-						});
-					}, 100)
+
+					// 记住密码
+					let {
+						mobile,
+						inviteCode
+					} = this.formData;
+					uni.setStorageSync("mail", mobile); // 存储手机号
+					uni.showToast({
+						title: this.$t("login.seccuss"),
+						success: () => {
+							uni.reLaunch({
+								url: "/pages/index/index",
+							});
+						},
+					});
 				});
 			},
 		},
@@ -120,161 +139,89 @@
 	@import "../../static/less/variable.less";
 
 	.login-page {
-		background: url("../../static/img/bg/gradient.png") no-repeat center center / 100% 100%;
-
 		.login-scroll {
-			.logo {
-				margin: 170rpx auto 62rpx;
-				// border-radius: 50%;
-				width: 140rpx;
-
-				image {
-					border-radius: 50%;
-				}
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			
+			.login-tit {
+				margin-bottom: 64rpx;
+				max-width: 250rpx;
+				font-weight: 800;
+				font-size: 60rpx;
+				color: #FFFFFF;
+				text-align: center;
+				line-height: 1.2;
 			}
 
 			.form-container {
-				padding: 65rpx 45rpx;
-				border-radius: 20rpx 20rpx 0 0;
-				background-color: #fff;
+				width: 100%;
 				min-height: 10%;
 				flex-grow: 1;
-
-				.form-tit {
-					margin-bottom: 32rpx;
-					color: @bodyColor;
-					text-align: center;
-					font-size: 48rpx;
-					font-weight: bold;
+				color: #fff;
+				
+				label {
+					margin-top: 36rpx;
+					line-height: 1.4;
+					font-size: 30rpx;
+					display: block;
 				}
 
 				.input-con {
-					margin-top: 40rpx;
-					padding: 30rpx 28rpx;
-					border-radius: 10rpx;
-					background-color: #f5f7fb;
+					margin-top: 28rpx;
 
 					.df(center, flex-start);
-
-					.image-icon {
-						width: 35rpx;
-						height: 38rpx;
-						background: no-repeat center center / 100%;
-					}
 
 					.inp {
-						margin-left: 25rpx;
+						border-radius: 10rpx;
+						padding: 30rpx 34rpx;
 						min-width: 10%;
 						flex-grow: 1;
+						position: relative;
+						z-index: 1;
+						.glassBg();
 
-						input {}
-					}
-
-					&.account {
-						.image-icon {
-							background-image: url("../../static/img/icon/phone.png");
-						}
-
-						.prefix-con {
-							position: relative;
-
-							.number-prefix {
-								margin-left: 22rpx;
-								margin-right: 25rpx;
-							}
-
-							.arrow {
-								width: 20rpx;
-								height: 12rpx;
-								background: url("../../static/img/icon/arrow.png") no-repeat center center / 100% 100%;
-
-								position: absolute;
-								right: 0;
-								top: 50%;
-								transform: translateY(-50%);
+						input {
+							line-height: 1.4;
+							font-size: 30rpx;
+							
+							&::placeholder {
+								color: #fff;
 							}
 						}
-					}
-
-					&.password {
-						.image-icon {
-							background-image: url("../../static/img/icon/clock.png");
-						}
-
-						.eye-icon {
-							width: 29rpx;
-							height: 22rpx;
-							background: url("../../static/img/icon/eye.png") no-repeat center center / 100%;
-
-							&.close {
-								background-image: url("../../static/img/icon/c_eye.png");
-							}
-						}
-					}
-
-					&.email {
-						.image-icon {
-							background-image: url("../../static/img/icon/email.png");
-						}
-
-						.eye-icon {
-							width: 29rpx;
-							height: 22rpx;
-							background: url("../../static/img/icon/eye.png") no-repeat center center / 100%;
-
-							&.close {
-								background-image: url("../../static/img/icon/c_eye.png");
-							}
-						}
-					}
-				}
-
-				.remember-me {
-					margin-top: 28rpx;
-					color: @descColor;
-
-					.df(center, flex-start);
-
-					.radio {
-						margin-right: 12rpx;
-						transform: scale(0.7);
-						font-size: @descSize;
 					}
 				}
 
 				.other {
-					padding-top: 90rpx;
+					padding-top: 40rpx;
 					width: 100%;
-					display: flex;
-					justify-content: space-between;
-					align-items: center;
 					color: #1A9DB7;
 					font-size: 26rpx;
+					color: #fff;
+					.df(center, space-between);
+					
+					.view1 {
+						font-size: 26rpx;
+						line-height: 1.4;
+					}
 				}
 
 				.btn-list {
-					margin-top: 46rpx;
+					padding-left: 30rpx;
+					padding-right: 30rpx;
+					margin-top: 118rpx;
 
 					.button {
 						margin-top: 30rpx;
-						padding: 32rpx 20rpx;
 						width: 100%;
-						font-size: @descSize;
 
 						&.login-btn {
-							border-color: #383838;
-							color: #fff;
-							// background-color: #383838;
-							background: #383838;
-
-							&[disabled] {
-								background-color: #585858;
-							}
+							.btn-box(50px, linear-gradient( 180deg, #F51B4C 0%, #ED4E49 100%));
 						}
 
 						&.region-btn {
-							border: 1px solid @descColor;
-							color: #383838;
+							.btn-box(50px, transparent);
+							.glassBg();
 						}
 					}
 				}

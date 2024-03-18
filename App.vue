@@ -11,8 +11,9 @@ export default {
 
 			// 获取当前页面路由信息
 			const currentPage = pages[pages.length - 1];
+			console.log(currentPage);
+			if(!currentPage) return;
 			const currentRoute = currentPage.route;
-			console.log(currentRoute);
 			if (currentRoute == "pages/login/region") {
 				uni.reLaunch({
 					url: "/pages/login/region",
@@ -147,9 +148,9 @@ body {
 	line-height: 1;
 
 	.page-scroll {
-		padding-left: 30rpx;
-		padding-right: 30rpx;
+		padding: 300rpx 45rpx;
 		height: 100%;
+		background: url("@/static/image/pageBg.png") no-repeat center center / cover;
 
 		&.has-tabbar {
 			// #ifdef H5
