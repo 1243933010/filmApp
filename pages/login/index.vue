@@ -1,51 +1,54 @@
 <template>
 	<view class="profix-page-container login-page">
-		<!-- <customHeader style="z-index: 0" /> -->
+		<customHeader style="z-index: 0" />
 		<customHeader style="position: fixed; top: 0; width: 100%" />
 		<view class="login-scroll page-scroll">
-			<view class="login-tit">
-				<text>Movie software</text>
+			<view class="logo pic">
+				<image src="../../static/img/logo.jpg" mode="widthFix" class="img"></image>
 			</view>
 
 			<view class="form-container">
-				<!-- TODO -->
-				<label for="account">邮箱</label>
-				<view class="input-con account">
+				<view class="form-tit">PUTH GROUP</view>
+
+				<view class="input-con password email">
+					<view class="image-icon"></view>
 					<view class="inp">
-						<!-- TODO -->
-						<input type="mail" name="account" v-model="formData.mail" placeholder="请输入邮箱" />
+						<input type="text" v-model="formData.email" :placeholder="$t('login.email')" />
 					</view>
+
 				</view>
 
-				<!-- TODO -->
-				<label for="pwd">密码</label>
+
 				<view class="input-con password">
+					<view class="image-icon"></view>
 					<view class="inp">
-						<!-- TODO -->
-						<input type="text" name="pwd" v-model="formData.password" :password="pwdType" placeholder="请输入密码" />
+						<input type="text" v-model="formData.captcha_code" :placeholder="$t('login.code')" />
 					</view>
-					<view class="eye-icon" :class="{ close: pwdType }" @click="handleEye"></view>
-				</view>
-				<view class="other">
-					<view class="view1" @click="goPage('/pages/login/region')">
-						<!-- TODO -->
-						<text>邮箱注册</text>
-					</view>
-					<view class="view1" @click="goPage('/pages/login/forgetEmailPassword')">
-						<!-- TODO -->
-						<text>忘记密码</text>
-					</view>
+					<!-- <view class="get" @click="handleTime">{{codeText}}</view> -->
+					<view class="get" v-if="typeof codeText =='number'"  >{{codeText}}</view>
+					<view class="get"  v-if="typeof codeText =='string'"  @click="handleTime">{{codeLocale}}</view>
 				</view>
 
-				<!-- <label class="remember-me">
-					<checkbox  class="radio" @change="changeRadio" value="1" checked="true" color="#FD862C" />
-					{{ $t("login.radioText") }}
-				</label> -->
+				<view class="" style="display: flex;justify-content: space-between;align-items: center;">
+					<!-- <view class="remember-me" @click="isCheck=!isCheck">
+						<view class="no-check" v-show="!isCheck"></view>
+						<image class="sure-check"  v-show="isCheck" src="../../static/img/icon/remember.png" mode="widthFix"></image>
+					    <text>{{$t('login.radioText')}}</text>
+					</view> -->
+					<view class=""></view>
+					<view class="forget-text" @click="goOther('/pages/login/forgetEmailPassword')">
+						<text>{{ $t("login.forget") }}</text>
+					</view>
+				</view>
 				<view class="btn-list">
-					<!-- TODO -->
-					<button class="button login-btn" :disabled="!(formData.mail && formData.password)" @click="loginHandle">登录</button>
-					<!-- TODO -->
-					<button class="button region-btn" @click="goPage(`/pages/login/emailLogin`)">邮箱登录</button>
+					<button class="button login-btn" :disabled="!(formData.email && formData.captcha_code)"
+						@click="loginHandle">{{ $t("login.btn1") }}</button>
+					<button class="button region-btn" @click="goRegion">{{ $t("region.btn1") }}</button>
+				</view>
+
+				<view class="other">
+					<view class="view1" @click="goOther('/pages/login/emailLogin')"><text>{{$t("login.logintype1")}}</text></view>
+					<view class="view1" @click="goOther('/pages/login/index')"><text>{{$t("login.logintype2")}}</text></view>
 				</view>
 			</view>
 		</view>
@@ -66,52 +69,93 @@
 		},
 		data() {
 			return {
-				iStatusBarHeight: 0,
-				pwdType: true,
-				isMember: true,
+				isCheck: true,
+				timeFnc: null,
+				codeText: '',
 				formData: {
-					login_type: '0',
-					mail: undefined,
-					password: "",
-					country_code: "+975", // 手机前缀
+					email: '',
+					login_type: '2',
+					captcha_code: ''
 				},
 			};
 		},
+		computed:{
+			codeLocale(){
+				return this.$t("login.get-code");
+			}
+		},
 		mounted() {
-			console.log(uni.getLocale(), '---')
-			this.iStatusBarHeight = uni.getSystemInfoSync().statusBarHeight;
-
-			// 获取缓存里面的手机号和密码
-			this.formData.mail = uni.getStorageSync("mail");
-			this.formData.password = uni.getStorageSync("password");
-
-			// 在页面加载时监听返回事件
-			uni.$on("getPrefix", event => {
-				this.formData.country_code = "+" + event.prefix;
-			});
+			this.codeText = this.$t("login.get-code");
 		},
 		methods: {
-			goPage(url) {
+			handleTime() {
+				if (!this.formData.email) {
+					uni.showToast({
+						icon: 'none',
+						title: this.$t("login.input-email")
+					})
+					return
+				}
+				if (typeof this.codeText == "number") {
+					return false
+				}
+				console.log(typeof this.codeText == "number")
+				this.codeText = 60;
+				this.sendEmail();
+				this.timeFnc = setInterval(() => {
+					this.codeText--;
+					if (this.codeText == 0) {
+						this.codeText = this.$t("login.get-code");
+						clearInterval(this.timeFnc);
+						this.timeFnc = null
+					}
+				}, 1000)
+			},
+			async sendEmail() {
+
+				let res = await $request("sendEmail", {
+					to_email: this.formData.email,
+					template:'login'
+				})
+				console.log(res)
+				uni.showToast({
+					icon: "none",
+					title: res.data.msg,
+				});
+			},
+			goOther(url) {
 				uni.navigateTo({
 					url
 				})
 			},
-			changeRadio(e) {
-				console.log(e);
-			},
-			openpNumberPicker() {},
-			handleEye() {
-				this.pwdType = !this.pwdType;
+			goRegion() {
+				// 去往注册页面
+				uni.navigateTo({
+					url: "/pages/login/region",
+				});
 			},
 			loginHandle() {
-				$request("login", this.formData).then(res => {
-					let { data, code, msg } = res.data;
-					let { token } = data;
-
+				if (!this.formData.email) {
+					uni.showToast({
+						icon: 'none',
+						title: this.$t("login.input-email")
+					})
+					return
+				}
+				if (!this.formData.captcha_code) {
+					uni.showToast({
+						icon: 'none',
+						title: this.$t("login.input-code")
+					})
+					return
+				}
+				$request("emailLogin", this.formData).then(res => {
+					let {data,code,msg} = res.data;
+					let {token} = data;
 					if (code !== 0) {
 						// 登录失败
 						uni.showToast({
-							title: res.data.msg,
+							title: msg,
 							icon: "none",
 						});
 
@@ -120,22 +164,11 @@
 
 					// 登录成功
 					uni.setStorageSync("token", `Bearer ${token}`); // 存储token
-
-					// 记住密码
-					let {
-						mobile,
-						password
-					} = this.formData;
-					uni.setStorageSync("mail", mobile); // 存储手机号
-					this.isMember ? uni.setStorageSync("password", password) : ""; // 存储密码
-					uni.showToast({
-						title: this.$t("login.seccuss"),
-						success: () => {
-							uni.reLaunch({
-								url: "/pages/index/index",
-							});
-						},
-					});
+					setTimeout(() => {
+						uni.reLaunch({
+							url: "/pages/index/index",
+						});
+					}, 100)
 				});
 			},
 		},
@@ -146,60 +179,162 @@
 	@import "../../static/less/variable.less";
 
 	.login-page {
+		background: url("../../static/img/bg/gradient.png") no-repeat center center / 100% 100%;
+
 		.login-scroll {
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-			
-			.login-tit {
-				margin-bottom: 64rpx;
-				max-width: 250rpx;
-				font-weight: 800;
-				font-size: 60rpx;
-				color: #FFFFFF;
-				text-align: center;
-				line-height: 1.2;
+			.logo {
+				margin: 170rpx auto 62rpx;
+				// border-radius: 50%;
+				width: 140rpx;
+
+				image {
+					border-radius: 50%;
+				}
 			}
 
 			.form-container {
-				width: 100%;
+				padding: 65rpx 45rpx;
+				border-radius: 20rpx 20rpx 0 0;
+				background-color: #fff;
 				min-height: 10%;
 				flex-grow: 1;
-				color: #fff;
-				
-				label {
-					margin-top: 36rpx;
-					line-height: 1.4;
-					font-size: 30rpx;
-					display: block;
+
+				.form-tit {
+					margin-bottom: 32rpx;
+					color: @bodyColor;
+					text-align: center;
+					font-size: 48rpx;
+					font-weight: bold;
+				}
+
+				.forget-text {
+					display: flex;
+					flex-direction: row-reverse;
+					padding-top: 30rpx;
+					// width: 50%;
+					display: inline-block;
+
+					text {
+						color: #1A9DB7;
+						font-size: 26rpx;
+					}
+				}
+
+				.remember-me {
+					// width: 50%;
+					display: inline-block;
+
+					.no-check {
+						width: 27rpx;
+						height: 27rpx;
+						box-sizing: border-box;
+						border: 1px solid @descColor;
+						margin-right: 12rpx;
+					}
+
+					.sure-check {
+						width: 27rpx;
+						margin-right: 12rpx;
+					}
+				}
+
+				.other {
+					padding-top: 90rpx;
+					width: 100%;
+					display: flex;
+					justify-content: space-between;
+					align-items: center;
+					color: #1A9DB7;
+					font-size: 26rpx;
 				}
 
 				.input-con {
-					margin-top: 28rpx;
-
+					margin-top: 40rpx;
+					padding: 30rpx 28rpx;
+					border-radius: 10rpx;
+					background-color: #f5f7fb;
+					position: relative;
 					.df(center, flex-start);
 
+					.image-icon {
+						width: 35rpx;
+						height: 38rpx;
+						background: no-repeat center center / 100%;
+					}
+
 					.inp {
-						border-radius: 10rpx;
-						padding: 30rpx 34rpx;
+						margin-left: 25rpx;
 						min-width: 10%;
 						flex-grow: 1;
-						position: relative;
-						z-index: 1;
-						
-						.glassBg();
 
-						input {
-							line-height: 1.4;
-							font-size: 30rpx;
-							
-							&::placeholder {
-								color: #fff;
+						input {}
+					}
+
+					.get {
+						position: absolute;
+						right: 0;
+						top: 0;
+						// width: 180rpx;
+						min-width: 100rpx;
+						padding: 0rpx 33rpx;
+						height: 100%;
+						// background: red;
+						background: linear-gradient(90deg, #0694B8 0%, #6BBDB4 100%);
+						border-radius: 10px;
+						display: flex;
+						justify-content: center;
+						align-items: center;
+						font-size: 26rpx;
+						color: #FFFFFF;
+					}
+
+					&.account {
+						.image-icon {
+							background-image: url("../../static/img/icon/phone.png");
+						}
+
+						.prefix-con {
+							position: relative;
+
+							.number-prefix {
+								margin-left: 22rpx;
+								margin-right: 25rpx;
+							}
+
+							.arrow {
+								width: 20rpx;
+								height: 12rpx;
+								background: url("../../static/img/icon/arrow.png") no-repeat center center / 100% 100%;
+
+								position: absolute;
+								right: 0;
+								top: 50%;
+								transform: translateY(-50%);
 							}
 						}
 					}
 
 					&.password {
+						.image-icon {
+							background-image: url("../../static/img/icon/yz.png");
+						}
+
+						.eye-icon {
+							width: 29rpx;
+							height: 22rpx;
+							background: url("../../static/img/icon/eye.png") no-repeat center center / 100%;
+
+							&.close {
+								background-image: url("../../static/img/icon/c_eye.png");
+							}
+						}
+					}
+
+					&.email {
+						.image-icon {
+							background-image: url("../../static/img/icon/email.png");
+						}
+
 						.eye-icon {
 							width: 29rpx;
 							height: 22rpx;
@@ -212,36 +347,42 @@
 					}
 				}
 
-				.other {
-					padding-top: 40rpx;
-					width: 100%;
-					color: #1A9DB7;
-					font-size: 26rpx;
-					.df(center, space-between);
-					color: #fff;
-					
-					.view1 {
-						font-size: 26rpx;
-						line-height: 1.4;
+				.remember-me {
+					margin-top: 28rpx;
+					color: @descColor;
+
+					.df(center, flex-start);
+
+					.radio {
+						margin-right: 12rpx;
+						transform: scale(0.7);
+						font-size: @descSize;
 					}
 				}
 
 				.btn-list {
-					padding-left: 30rpx;
-					padding-right: 30rpx;
-					margin-top: 118rpx;
+					margin-top: 46rpx;
 
 					.button {
 						margin-top: 30rpx;
+						padding: 32rpx 20rpx;
 						width: 100%;
+						font-size: @descSize;
 
 						&.login-btn {
-							.btn-box(50px, linear-gradient( 180deg, #F51B4C 0%, #ED4E49 100%));
+							border-color: #383838;
+							color: #fff;
+							// background-color: #383838;
+							background: #383838;
+
+							&[disabled] {
+								background-color: #585858;
+							}
 						}
 
 						&.region-btn {
-							.btn-box(50px, transparent);
-							.glassBg();
+							border: 1px solid @descColor;
+							color: #383838;
 						}
 					}
 				}
