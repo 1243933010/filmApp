@@ -74,24 +74,24 @@ export default {
 
 .page {
 	width: 100%;
-	transition: background-color .35s ease-in-out;
-	
+	transition: background-color 0.35s ease-in-out;
+
 	&.has-bg {
 		background-color: #fff;
 
-.image-width {
-	padding-top: 44rpx;
-	width: 100%;
-	background-color: transparent;
+		.image-width {
+			padding-top: 44rpx;
+			width: 100%;
+			background-color: transparent;
 
-	.header {
-		.header-select {
-			.header-select-select {
-				border-top-color: #000;
+			.header {
+				.header-select {
+					.header-select-select {
+						border-top-color: #000;
+					}
+				}
 			}
 		}
-	}
-}
 	}
 }
 
@@ -120,6 +120,10 @@ export default {
 				border-radius: 50%;
 			}
 		}
+		
+		.header-text {
+			.vertical(1);
+		}
 
 		.header-select {
 			.df(center);
@@ -139,7 +143,7 @@ export default {
 				margin-top: 14rpx;
 				border: 12rpx solid transparent;
 				border-top-color: #fff;
-				transition: border-color .35s ease-in-out;
+				transition: border-color 0.35s ease-in-out;
 			}
 		}
 	}

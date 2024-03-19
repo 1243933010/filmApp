@@ -1,97 +1,83 @@
 <template>
-  <view class="profix-page-container index-page">
-    <customHeader style="z-index: 0" :headerText="$t('app.name')" :above="false" />
-    <customHeader :headerText="$t('app.name')" style="position: fixed; top: 0; z-index: 1" :above="true" />
-    <view class="index-scroll page-scroll has-tabbar">
-      <view class="banner">
-        <swiper class="swiper" circular autoplay style="height: 400rpx;">
-          <swiper-item v-for="(item, index) in swiperList" :key="index">
-            <view class="swiper-item">
-              <view class="pic">
-                <image  @click="linkImg(item)" :src="item.image" class="img" mode="widthFix"></image>
-              </view>
-            </view>
-          </swiper-item>
-        </swiper>
-      </view>
+	<view class="profix-page-container index-page">
+		<scroll-view :scroll-y="true" :scroll-x="false" @scroll="scrollHandle" class="page-scroll has-tabbar">
+			<!-- TODO -->
+			<customHeader headerText="Film and Television Group" style="position: fixed; top: 0; z-index: 1" :above="true" />
+			<view class="index-scroll page-con">
+				<view class="banner">
+					<view class="pic">
+						<image src="@/static/image/index/banner.png" class="img" mode="widthFix"></image>
+					</view>
+				</view>
 
-      <view class="news-list">
-        <view class="left-tit">{{ $t("index.news") }}</view>
-        <view class="news-swiper">
-          <swiper class="swiper" vertical circular autoplay>
-            <swiper-item v-for="(item, index) in newsList" :key="index" @click="newLink(item)">
-              <view class="swiper-item">{{ item.name }}</view>
-            </swiper-item>
-          </swiper>
-        </view>
-      </view>
+				<view class="menu-container">
+					<view class="menu-list">
+						<view @click="goPage(item.link)" class="menu-item" v-for="(item, index) in menuList" :key="index">
+							<view class="pic">
+								<image :src="item.iconUrl" mode="widthFix" class="img"></image>
+							</view>
+							<view class="menu-tit">{{ item.tit }}</view>
+						</view>
+					</view>
+				</view>
 
-      <view class="menu-container">
-        <view class="menu-list" v-for="(item, index) in menuList" :key="index">
-          <view @click="goPage(e.link)" class="menu-item" v-for="(e, i) in item" :key="i">
-            <view class="pic">
-              <image :src="e.iconUrl" mode="widthFix" class="img"></image>
-            </view>
-            <view class="menu-tit">{{e.tit}}</view>
-          </view>
-        </view>
-      </view>
+				<view class="news-list">
+					<!-- TODO -->
+					<view class="left-tit">News</view>
+					<view class="news-swiper">
+						<swiper class="swiper" vertical circular autoplay>
+							<swiper-item v-for="(item, index) in newsList" :key="index" @click="newLink(item)">
+								<view class="swiper-item">{{ item.name }}</view>
+							</swiper-item>
+						</swiper>
+					</view>
+				</view>
 
-      <view class="paper-card-list">
-        <view class="paper-card " @click="goPage(linkInfo.Join_community_url.val)">
-          <!-- <image src="../../static/img/paperCard/join.png" mode="widthFix" class="img"></image> -->
-		  
-		  <view class="left">
-		  	<view class="title">{{$t('app.img1')}}</view>
-			<view class="label">{{$t('app.img2')}}</view>
-		  </view>
-		  <view class="right1">
-		  	<image src="../../static/img/shequ.c92aac23.png" mode="widthFix"></image>
-		  </view>
-        </view>
-        <view class="paper-card " @click="goPage(linkInfo.telegram_url.val)">
-          <!-- <image src="../../static/img/paperCard/paper_air.png" mode="widthFix" class="img"></image> -->
-          <view class="left">
-          	<view class="title">{{$t('app.img3')}}</view>
-          	<view class="label">{{$t('app.img4')}}</view>
-          </view>
-          <view class="right">
-          	<image src="../../static/img/feiji.d3ae16e3.png" mode="widthFix"></image>
-          </view>
-		</view>
-      </view>
+				<view class="paper-card-list">
+					<view class="paper-card" @click="goPage(linkInfo.Join_community_url.val)">
+						<view class="left">
+							<!-- TODO -->
+							<view class="title">Paper airplanes</view>
+							<view class="label">Contact customer service online</view>
+						</view>
+						<view class="right1">
+							<image src="../../static/img/shequ.c92aac23.png" mode="widthFix"></image>
+						</view>
+					</view>
+				</view>
 
-      <view class="product-container">
-        <view class="tit">{{ $t("index.moreProduct") }}</view>
-        <view class="desc">{{ $t("index.moreProductDesc") }}</view>
+				<view class="product-container">
+					<view class="tit">
+						<!-- TODO -->
+						<text class="left">Popular movies and television</text>
+						<text class="right">more</text>
+					</view>
 
-        <view class="product-list">
-          <view  class="product-item" v-for="(item,index) in nftList" :key="index" >
-            <view class="product-img pic">
-              <image :src="item.nft_img" mode="aspectFit" class="img" @click="goProductDetail(item)"></image>
-            </view>
-            <view class="product-info">
-              <view class="product-tit">{{item.nft_name}}</view>
-              <view class="product-price-info">
-                <view class="rebate">$ {{item.money*1}}</view>
-                <!-- <view class="brfore-rebate">$ 1980</view> -->
-              </view>
-            </view>
-          </view>
-          
-        </view>
-      </view>
-    </view>
-	<uni-popup ref="popup" type="center" background-color="#fff" >
-	  <view class="popup-container">
-	    <view class="popup-tit">{{newsList[0].name}}</view>
-	    <view class="popup-content">
-			<rich-text :nodes="newsList[0].content"></rich-text>
-		</view>
-	    <view class="popup-close-btn" @click="$refs.popup.close()">{{$t("app.sure")}}</view>
-	  </view>
-	</uni-popup>
-  </view>
+					<view class="product-list">
+						<view class="product-item" v-for="(item, index) in nftList" :key="index">
+							<view class="product-img pic">
+								<image src="@/static/image/index/goodsImg.png" mode="widthFix" class="img" @click="goProductDetail(item)"></image>
+							</view>
+							<view class="product-info">
+								<view class="product-tit">{{ item.nft_name }}</view>
+								<view class="product-time">$ {{ item.money * 1 }}</view>
+								<view class="product-desc">Jianye Times Cinema</view>
+							</view>
+						</view>
+					</view>
+				</view>
+			</view>
+		</scroll-view>
+		<uni-popup ref="popup" type="center" background-color="#fff">
+			<view class="popup-container">
+				<view class="popup-tit">{{ newsList[0].name }}</view>
+				<view class="popup-content">
+					<rich-text :nodes="newsList[0].content"></rich-text>
+				</view>
+				<view class="popup-close-btn" @click="$refs.popup.close()">{{ $t("app.sure") }}</view>
+			</view>
+		</uni-popup>
+	</view>
 </template>
 
 <script>
@@ -99,223 +85,197 @@ import customHeader from "@/components/customHeader/customHeader.vue";
 import { $request } from "@/utils/request.js";
 import { setTabbar } from "@/utils/utils.js";
 export default {
-  components: { customHeader },
-  data() {
-    return {
-      title: "Hello",
-      newsList: [],
-      swiperList: [],
-	  nftList:[],
-	  linkInfo:{},
-	  above:true
-    };
-  },
-  onLoad() {},
-  computed: {
-    locales() {
-      return [
-        {
-          text: this.$t("locale.auto"),
-          code: "auto",
-        },
-        {
-          text: this.$t("locale.en"),
-          code: "en",
-        },
-        {
-          text: this.$t("locale.zh-hans"),
-          code: "zh-Hans",
-        },
-        {
-          text: this.$t("locale.zh-hant"),
-          code: "zh-Hant",
-        },
-        {
-          text: this.$t("locale.ja"),
-          code: "ja",
-        },
-      ];
-    },
-    menuList() {
-      return [
-        [
-          {
-            iconUrl: "../../static/img/icon/index/11.png",
-            tit: this.$t("index.menuBtn1"),
-            link: "/pages/index/abloutList",
-          },
-          {
-            iconUrl: "../../static/img/icon/index/22.png",
-            tit: this.$t("index.menuBtn2"),
-            link: "/pages/index/qualifications",
-          },
-          {
-            iconUrl: "../../static/img/icon/index/33.png",
-            tit: this.$t("index.menuBtn3"),
-            link: "/pages/index/activityInfo1",
-          },
-        ],
-        [
-          {
-            iconUrl: "../../static/img/icon/index/44.png",
-            tit: this.$t("index.menuBtn4"),
-            link: "/pages/index/storageLevel",
-          },
-          {
-            iconUrl: "../../static/img/icon/index/55.png",
-            tit: this.$t("index.menuBtn5"),
-            link: "/pages/index/recargar",
-          },
-          {
-            iconUrl: "../../static/img/icon/index/66.png",
-            tit: this.$t("index.menuBtn6"),
-            link: "/pages/index/withdraw",
-          },
-        ],
-        [
-          {
-            iconUrl: "../../static/img/icon/index/77.png",
-            tit: this.$t("index.menuBtn7"),
-            link: "/pages/index/invitePage",
-          },
-          {
-            iconUrl: "../../static/img/icon/index/88.png",
-            tit: this.$t("index.menuBtn8"),
-            link: "/pages/index/activity",
-          },
-          {
-            iconUrl: "../../static/img/icon/index/88.png",
-            tit: this.$t("index.menuBtn9"),
-            link: "/pages/join/join",
-          },
-        ],
-      ];
-    },
-  },
-  mounted() {
-	// console.log(uni.getLocale())
-	setTabbar(this.$t)
-    this.adverts();
-    this.getNotices();
-	this.nftListFnc();
-	this.linkObj();
-  },
-  methods: {
-	  async linkObj(){
-		  let res= await $request('linkObj',{});
-		 console.log(res.data)
-		  if(res.data.code==0){
-			   console.log(this.menuList)
-			  // this.menuList[2][0].link = res.data.data.app_download_url.val
-			  this.linkInfo = res.data.data;
-			   console.log(this.menuList)
-		  }
-	  },
-	  async nftListFnc(){
-	  	this.loading = true;
-	  	let formData = {keywords:'',page:1,page_size:20,vip_grade:''}
-	  	let res= await $request('nftList',formData);
-	  	console.log(res)
-	  	this.loading = false;
-	  	if(res.data.code===0){
-	  		this.nftList=res.data.data.data;
-			console.log(this.nftList)
-	  	}
-	  },
-    newLink(item) {
-		
-      uni.setStorageSync("notices", item);
-      uni.navigateTo({
-        url: "./notices",
-      });
-    },
-    linkImg(item) {
-		
-      uni.navigateTo({
-        url: item.url,
-      });
-    },
-    async getNotices() {
-      let res = await $request("notices", {});
-      // console.log(res)
-      if (res.data.code === 0) {
-        this.newsList = res.data.data;
-		console.log(this.newsList,'-------')
-		if(this.newsList.length>0){
-			this.$refs.popup.open("center");
-		}
-        return false;
-      }
-      uni.showToast({
-        icon: "none",
-        title: res.data.msg,
-      });
-    },
-    async adverts() {
-      let res = await $request("adverts", {});
-      // console.log(res)
-      if (res.data.code === 0) {
-        this.swiperList = res.data.data;
-        return false;
-      }
-      uni.showToast({
-        icon: "none",
-        title: res.data.msg,
-      });
-    },
-    onLocaleChange(e) {
-      if (this.isAndroid) {
-        uni.showModal({
-          content: this.$t("index.language-change-confirm"),
-          success: res => {
-            if (res.confirm) {
-              uni.setLocale(e.code);
-            }
-          },
-        });
-      } else {
-        uni.setLocale(e.code);
-        this.$i18n.locale = e.code;
-      }
-    },
-    goProductDetail(item) {
-		
-      uni.navigateTo({
-        url: `/pages/index/productDetail?id=${item.id}`,
-      });
-    },
-    goPage(link) {
-		if(link=='/pages/index/invitePage'){
-			// #ifdef APP
-			return false
-			// #endif
-		}
-		// #ifdef H5
-		if(link.includes('http')||link.includes('www')){
-			window.open(link, '_blank');
-			return
-		}
-		// #endif
-		// #ifdef APP-PLUS
-		console.log(link,'===')
-		if(link.includes('http')||link.includes('www')){
+	components: { customHeader },
+	data() {
+		return {
+			title: "Hello",
+			newsList: [],
+			swiperList: [],
+			nftList: [],
+			linkInfo: {},
+			above: true,
+		};
+	},
+	onLoad() {},
+	computed: {
+		locales() {
+			return [
+				{
+					text: this.$t("locale.auto"),
+					code: "auto",
+				},
+				{
+					text: this.$t("locale.en"),
+					code: "en",
+				},
+				{
+					text: this.$t("locale.zh-hans"),
+					code: "zh-Hans",
+				},
+				{
+					text: this.$t("locale.zh-hant"),
+					code: "zh-Hant",
+				},
+				{
+					text: this.$t("locale.ja"),
+					code: "ja",
+				},
+			];
+		},
+		menuList() {
+			return [
+				{
+					iconUrl: "../../static/img/icon/index/11.png",
+					tit: "Platform Rewards", // TODO
+					link: "/pages/index/abloutList",
+				},
+				{
+					iconUrl: "../../static/img/icon/index/22.png",
+					tit: "VIP level", // TODO
+					link: "/pages/index/qualifications",
+				},
+				{
+					iconUrl: "../../static/img/icon/index/33.png",
+					tit: "Invite friends", // TODO
+					link: "/pages/index/activityInfo1",
+				},
+				{
+					iconUrl: "../../static/img/icon/index/44.png",
+					tit: "Download the app", // TODO
+					link: "/pages/index/storageLevel",
+				},
+			];
+		},
+	},
+	mounted() {
+		// console.log(uni.getLocale())
+		setTabbar(this.$t);
+		this.adverts();
+		this.getNotices();
+		this.nftListFnc();
+		this.linkObj();
+	},
+	methods: {
+		scrollHandle(event) {
+			const { scrollTop } = event.detail;
+			if (scrollTop >= 50) {
+				this.headerBg = true;
+			} else {
+				this.headerBg = false;
+			}
+		},
+		async linkObj() {
+			let res = await $request("linkObj", {});
+			// console.log(res.data);
+			if (res.data.code == 0) {
+				// console.log(this.menuList);
+				// this.menuList[2][0].link = res.data.data.app_download_url.val
+				this.linkInfo = res.data.data;
+				// console.log(this.menuList);
+			}
+		},
+		async nftListFnc() {
+			this.loading = true;
+			let formData = { keywords: "", page: 1, page_size: 20, vip_grade: "" };
+			let res = await $request("nftList", formData);
+			// console.log(res);
+			this.loading = false;
+			if (res.data.code === 0) {
+				this.nftList = res.data.data.data;
+				// console.log(this.nftList);
+			}
+		},
+		newLink(item) {
+			uni.setStorageSync("notices", item);
 			uni.navigateTo({
-			  url: `/pages/index/webview?url=${link}`,
+				url: "./notices",
 			});
-			return
-		}
-		// #endif
-      if (link.indexOf("join") !== -1) {
-        uni.switchTab({
-          url: link,
-        });
-      } else {
-        uni.navigateTo({
-          url: link,
-        });
-      }
-    },
-  },
+		},
+		linkImg(item) {
+			uni.navigateTo({
+				url: item.url,
+			});
+		},
+		async getNotices() {
+			let res = await $request("notices", {});
+			// console.log(res)
+			if (res.data.code === 0) {
+				this.newsList = res.data.data;
+				// console.log(this.newsList, "-------");
+				if (this.newsList.length > 0) {
+					this.$refs.popup.open("center");
+				}
+				return false;
+			}
+			uni.showToast({
+				icon: "none",
+				title: res.data.msg,
+			});
+		},
+		async adverts() {
+			let res = await $request("adverts", {});
+			// console.log(res)
+			if (res.data.code === 0) {
+				this.swiperList = res.data.data;
+				return false;
+			}
+			uni.showToast({
+				icon: "none",
+				title: res.data.msg,
+			});
+		},
+		onLocaleChange(e) {
+			if (this.isAndroid) {
+				uni.showModal({
+					content: this.$t("index.language-change-confirm"),
+					success: res => {
+						if (res.confirm) {
+							uni.setLocale(e.code);
+						}
+					},
+				});
+			} else {
+				uni.setLocale(e.code);
+				this.$i18n.locale = e.code;
+			}
+		},
+		goProductDetail(item) {
+			uni.navigateTo({
+				url: `/pages/index/productDetail?id=${item.id}`,
+			});
+		},
+		goPage(link) {
+			if (link == "/pages/index/invitePage") {
+				// #ifdef APP
+				return false;
+				// #endif
+			}
+			// #ifdef H5
+			if (link.includes("http") || link.includes("www")) {
+				window.open(link, "_blank");
+				return;
+			}
+			// #endif
+			// #ifdef APP-PLUS
+			// console.log(link, "===");
+			if (link.includes("http") || link.includes("www")) {
+				uni.navigateTo({
+					url: `/pages/index/webview?url=${link}`,
+				});
+				return;
+			}
+			// #endif
+			if (link.indexOf("join") !== -1) {
+				uni.switchTab({
+					url: link,
+				});
+			} else {
+				uni.navigateTo({
+					url: link,
+				});
+			}
+		},
+	},
 };
 </script>
 
@@ -323,246 +283,238 @@ export default {
 @import "../../static/less/variable.less";
 
 .index-page {
-  background-color: #f5f4f9;
+	background-color: #1E1F28;
 
-  .index-scroll {
-    .banner {
-      margin-left: -30rpx;
-      margin-right: -30rpx;
+	.index-scroll {
+		padding: 0;
+		
+		.banner {
+			margin-left: -30rpx;
+			margin-right: -30rpx;
 
-      .swiper {
-        height: 140px;
-      }
-    }
+			.swiper {
+				height: 140px;
+			}
+		}
 
-    .news-list {
-      margin-left: -30rpx;
-      margin-right: -30rpx;
-      padding: 10rpx 30rpx;
-      background-color: #fff;
+		.news-list {
+			padding: 20rpx 30rpx;
+			background-color: rgba(255, 255, 255, .1);
 
-      .df(center, flex-start);
-	  flex-direction: row;
+			.df(center, flex-start);
 
-      .left-tit {
-        margin-right: 38rpx;
-        border-radius: 0 50px 50px 0;
-        padding: 10rpx 30rpx;
-        // background: linear-gradient(0deg, #fd631f 0%, #fd7e1f 100%);
-		background: linear-gradient(90deg, #1098B7 0%, #64BAB4 100%);
-        color: #fff;
-      }
+			.left-tit {
+				margin-right: 38rpx;
+				border-radius: 0 30px 30px 0;
+				padding: 10rpx 30rpx;
+				background-color: #FE6251;
+				color: #1E1F28;
+				font-size: 22rpx;
+				font-weight: bold;
+				line-height: 1.36;
+			}
 
-      .news-swiper {
-        min-width: 10%;
-        flex-grow: 1;
+			.news-swiper {
+				min-width: 10%;
+				flex-grow: 1;
 
-        .swiper {
-          height: 36rpx;
+				.swiper {
+					height: 36rpx;
 
-          .swiper-item {
-            overflow: hidden;
-            white-space: nowrap;
-            text-overflow: ellipsis;
+					.swiper-item {
+						.vertical(1);
 
-            color: #908f9a;
-            font-size: @descSize;
-            line-height: 36rpx;
-          }
-        }
-      }
-    }
+						color: #C3C8DA;
+						font-size: @descSize;
+						line-height: 36rpx;
+					}
+				}
+			}
+		}
 
-    .menu-container {
-      padding: 70rpx 0rpx;
+		.menu-container {
+			padding: 40rpx 0rpx 18rpx;
 
-      .menu-list {
-        margin-bottom: 60rpx;
+			.menu-list {
+				.df(stretch, space-between);
 
-        .df(stretch, space-between);
-		flex-direction: row;
+				.menu-item {
+					.df(center, flex-start, column);
+					
+					padding: 0 15rpx;
+					width: 25%;
+					text-align: center;
 
-        &:last-child {
-          margin-bottom: 0;
-        }
+					.pic {
+						width: 56rpx;
+						
+						.img {
+							width: 100%;
+						}
+					}
 
-        .menu-item {
-          .df(center, center);
-          flex-direction: column;
-          width: 33.33%;
-          text-align: center;
+					.menu-tit {
+						margin-top: 13rpx;
+						font-size: 22rpx;
+						color: #C0C3D2;
+						line-height: 1.25;
+					}
+				}
+			}
+		}
 
-          .pic {
-            width: 58rpx;
-			.img{
+		.paper-card-list {
+			margin: 30rpx 30rpx 34rpx;
+
+			.paper-card {
+				border-radius: 10rpx;
+				padding: 10rpx 0 10rpx 44rpx;
 				width: 100%;
-			}
-          }
+				background: linear-gradient( 270deg, #2F303B 0%, #35374A 100%);
 
-          .menu-tit {
-            margin-top: 24rpx;
-            font-size: 24rpx;
-          }
-        }
-      }
-    }
-
-    .paper-card-list {
-      margin-bottom: 36rpx;
-
-      .paper-card {
-        margin-bottom: 10rpx;
-        width: 100%;
-		// height: 280rpx;
-		box-sizing: border-box;
-		display: flex;
-		flex-direction: row;
-		justify-content: space-between;
-		align-items: center;
-		// background: linear-gradient(0deg, rgba(249,246,233,1) 0%,  rgba(251,249,255,1) 100%);
-		background: linear-gradient(90deg, #B8DDDE 0%, #DBEBEB 100%);
-		// background: red;
-		padding: 40rpx 50rpx;
-		.left{
-			width: 70%;
-			.title{
-				color: #E68724;
-				font-size: 36rpx;
-				font-weight: 600;
-				margin-bottom: 40rpx;
-			}
-			.label{
-				color: #E68724;
-				font-size: 24rpx;
-				// font-weight: 600;
-				// margin-bottom: 30rpx;
+				.df(center, space-between);
+				
+				.left {
+					width: 70%;
+					color: #C0C3D2;
+					line-height: 1.4;
+					
+					.title {
+						margin-bottom: 36rpx;
+						font-size: 30rpx;
+						font-weight: 800;
+					}
+					
+					.label {
+						font-size: 20rpx;
+					}
+				}
+				
+				.right {
+					width: 30%;
+					display: flex;
+					justify-content: center;
+					align-items: center;
+					image {
+						width: 137rpx;
+					}
+				}
+				.right1 {
+					width: 30%;
+					display: flex;
+					justify-content: center;
+					align-items: center;
+					image {
+						width: 174rpx;
+					}
+				}
 			}
 		}
-		.right{
-			width: 30%;
-			display: flex;
-			justify-content: center;
-			align-items: center;
-			image{
-				width: 137rpx;
+
+		.product-container {
+			padding-left: 30rpx;
+			padding-right: 30rpx;
+
+			.tit {
+				margin-bottom: 20rpx;
+				color: #C0C3D2;
+				
+				.df(baseline, space-between);
+				
+				.left {
+					font-size: 30rpx;
+					line-height: 1.4;
+					font-weight: bold;
+				}
+				
+				.right {
+					font-size: 24rpx;
+					line-height: 1.375;
+				}
+			}
+
+			.product-list {
+				margin-left: -7.5rpx;
+				margin-right: -7.5rpx;
+				.df(stretch, flex-start);
+				flex-wrap: wrap;
+
+				.product-item {
+					padding:0 7.5rpx 40rpx;
+					border-radius: 8rpx;
+					width: 33.33%;
+					overflow: hidden;
+
+					.product-img {
+						border-radius: 20rpx;
+						width: 100%;
+						background-color: #e8e8e8;
+					}
+
+					.product-info {
+						.product-tit {
+							.vertical(2);
+							margin-top: 10rpx;
+							color: #fff;
+							font-size: 24rpx;
+							line-height: 1.375;
+							font-weight: 800;
+						}
+
+						.product-time {
+							color: #D32B56;
+							font-size: 20rpx;
+							line-height: 1.3;
+						}
+						
+						.product-desc {
+							font-size: 20rpx;
+							line-height: 1.4;
+							color: #C0C3D2;
+						}
+					}
+
+					&:nth-child(2n) {
+						margin-right: 0;
+					}
+				}
 			}
 		}
-		.right1{
-			width: 30%;
-			display: flex;
-			justify-content: center;
-			align-items: center;
-			image{
-				width: 174rpx;
-			}
-		}
-      }
-    }
-
-    .product-container {
-      padding-bottom: 26rpx;
-
-      .tit {
-        margin-bottom: 8rpx;
-        color: @bodyColor;
-        font-size: @bodySize;
-      }
-
-      .desc {
-        margin-bottom: 28rpx;
-        color: #777680;
-        font-size: 24rpx;
-      }
-
-      .product-list {
-        .df(stretch, flex-start);
-		flex-direction: row;
-        flex-wrap: wrap;
-
-        .product-item {
-          margin-top: 10rpx;
-          margin-right: 10rpx;
-          border-radius: 8rpx;
-          background-color: #fff;
-          width: calc(50% - 5rpx);
-          overflow: hidden;
-
-          .product-img {
-            width: 100%;
-			height: 400rpx;
-            background-color: #e8e8e8;
-			image{
-				width: 100%;
-				height: 100%;
-				// height: 100rpx;
-			}
-          }
-
-          .product-info {
-            padding: 20rpx 28rpx;
-
-            .product-tit {
-              .vertical(2);
-            }
-
-            .product-price-info {
-              .df(center, space-between);
-
-              .rebate {
-                color: #fd384f;
-                font-size: 36rpx;
-                font-weight: bold;
-              }
-
-              .brfore-rebate {
-                color: #777680;
-                font-size: 30rpx;
-                text-decoration: line-through;
-              }
-            }
-          }
-
-          &:nth-child(2n) {
-            margin-right: 0;
-          }
-        }
-      }
-    }
-  }
+	}
 }
 .popup-container {
-  border-radius: 20rpx;
-  padding: 30rpx 25rpx 55rpx;
-  width: calc(100vw - 184rpx);
+	border-radius: 20rpx;
+	padding: 30rpx 25rpx 55rpx;
+	width: calc(100vw - 184rpx);
 
-  .df(center, flex-start);
-  flex-direction: column;
+	.df(center, flex-start);
+	flex-direction: column;
 
-  .popup-tit {
-    margin-bottom: 36rpx;
-    text-align: center;
-    font-size: @bodySize;
-    color: @bodyColor;
-    font-weight: bold;
-  }
+	.popup-tit {
+		margin-bottom: 36rpx;
+		text-align: center;
+		font-size: @bodySize;
+		color: @bodyColor;
+		font-weight: bold;
+	}
 
-  .popup-content {
-    color: #666;
-    font-size: 24rpx;
-    line-height: 1.41;
-	// height: 100rpx;
-	max-height: 500rpx;
-	overflow-y: scroll;
-  }
+	.popup-content {
+		color: #666;
+		font-size: 24rpx;
+		line-height: 1.41;
+		// height: 100rpx;
+		max-height: 500rpx;
+		overflow-y: scroll;
+	}
 
-  .popup-close-btn {
-    margin-top: 46rpx;
-    border-radius: 50rpx;
-    padding: 30rpx 80rpx;
-    background-color: #fd7e1f;
-	// background: linear-gradient(90deg, #B8DDDE 0%, #DBEBEB 100%);
-    color: #fff;
-    font-size: 26rpx;
-  }
+	.popup-close-btn {
+		margin-top: 46rpx;
+		border-radius: 50rpx;
+		padding: 30rpx 80rpx;
+		background-color: #fd7e1f;
+		// background: linear-gradient(90deg, #B8DDDE 0%, #DBEBEB 100%);
+		color: #fff;
+		font-size: 26rpx;
+	}
 }
 </style>

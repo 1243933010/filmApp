@@ -172,6 +172,7 @@ body {
 
 	.pic {
 		font-size: 0;
+		overflow: hidden;
 
 		.img {
 			width: 100%;
