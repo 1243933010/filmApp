@@ -1,6 +1,6 @@
 <template>
 	<view class="profix-page-container join-page">
-		<customHeader style="z-index: 0" :headerText="$t('app.name')" />
+		<!-- <customHeader style="z-index: 0" :headerText="$t('app.name')" /> -->
 		<customHeader @listenLocale="listenLocale" :headerText="$t('app.name')"
 			style="position: fixed; top: 0; width: 100%; z-index: 1" />
 		<view class="banner1">
