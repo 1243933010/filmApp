@@ -1,7 +1,7 @@
 <template>
 	<view class="profix-page-container email-verification-login-page">
 		<scroll-view :scroll-y="true" :scroll-x="false" @scroll="scrollHandle" class="page-scroll">
-			<customHeader :class="{'has-bg': headerBg}" style="position: fixed; top: 0; width: 100%" />
+			<customHeader :logoTag="true" :class="{'has-bg': headerBg}" style="position: fixed; top: 0; width: 100%" />
 			<view class="email-verification-login-scroll page-con">
 				<view class="login-tit">
 					<text>Movie software</text>

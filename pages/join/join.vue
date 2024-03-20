@@ -1,5 +1,5 @@
 <template>
-	<view class="profix-page-container join-page">
+	<view class="profix-page-container join-page has-tabbar">
 		<scroll-view :scroll-y="true" :scroll-x="false" class="page-scroll">
 			<!-- TODO -->
 			<customHeader @listenLocale="listenLocale" headerText="加盟" style="background-color: #1E1F28; position: fixed; top: 0; width: 100%; z-index: 1" />

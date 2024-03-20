@@ -124,13 +124,18 @@ export default {
 </script>
 
 <style lang="less">
+@import "@/static/less/variable.less";
+
 /*每个页面公共css */
 * {
 	box-sizing: border-box;
 }
 uni-page-body {
 	overflow: hidden;
-	height: calc(100vh - var(--tab-bar-height));
+	
+	.has-tabbar {
+		height: calc(100vh - var(--tab-bar-height));
+	}
 }
 input {
 	margin: 0;
@@ -178,16 +183,42 @@ body {
 			width: 100%;
 		}
 	}
-
-	.button {
-		border-radius: 10rpx;
-		border: none;
-		padding: 0;
-		background-color: transparent;
-		line-height: normal;
-
-		&::after {
-			content: none;
+	
+	.popup-container {
+		.df(center, flex-start, column);
+		
+		border-radius: 20rpx;
+		border: 1rpx solid #707070;
+		padding: 40rpx 30rpx 46rpx;
+		width: calc(100vw - 184rpx);
+		background-color: #2F303B;
+		
+		.popup-tit {
+			margin-bottom: 24rpx;
+			text-align: center;
+			font-size: 30rpx;
+			color: #FFFFFF;
+			font-weight: 800;
+			line-height: 1.4;
+		}
+	
+		.popup-content {
+			color: #FFFFFF;
+			font-size: 24rpx;
+			line-height: 1.41;
+			line-height: 1.625;
+			max-height: 500rpx;
+			overflow-y: scroll;
+		}
+	
+		.popup-close-btn {
+			.btn-box(50rpx, linear-gradient( 180deg, #F51B4C 0%, #ED4E49 100%));
+			
+			margin-top: 26rpx;
+			padding-top: 24rpx;
+			padding-bottom: 24rpx;
+			width: calc(100% - 160rpx);
+			text-align: center;
 		}
 	}
 }

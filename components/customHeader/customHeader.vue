@@ -3,7 +3,7 @@
 		<view class="image-width">
 			<view class="header" :style="{ paddingTop: iStatusBarHeight + 'px' }">
 				<view class="header-icon" @click="openPop">
-					<image src="../../static/image/logo.png" mode="widthFix"></image>
+					<image src="../../static/image/logo.png" v-if="logoTag" mode="widthFix"></image>
 				</view>
 				<view class="header-text">
 					<text>{{ headerText }}</text>
@@ -17,7 +17,7 @@
 			</view>
 		</view>
 
-		<uni-popup ref="popup" type="center" background-color="#fff" v-if="above">
+		<uni-popup ref="popup" type="center" background-color="transparent" v-if="above">
 			<view class="popup-container">
 				<view class="popup-tit">{{ $t("app.name") }}</view>
 				<view class="popup-content">{{ $t("aboutUs.content") }}</view>
@@ -31,7 +31,7 @@
 import { setTabbar } from "@/utils/utils.js";
 export default {
 	name: "customHeader",
-	props: ["headerText", "above"],
+	props: ["headerText", "above", "logoTag"],
 	data() {
 		return {
 			iStatusBarHeight: 0,
@@ -45,7 +45,7 @@ export default {
 	},
 	mounted() {
 		this.iStatusBarHeight = uni.getSystemInfoSync().statusBarHeight;
-		console.log(this.iStatusBarHeight, "系统栏高度");
+		// console.log(this.iStatusBarHeight, "系统栏高度");
 		let code = uni.getLocale();
 		if (code) {
 			this.imgSrc = this.iconList[this.locale[code]];
@@ -107,9 +107,12 @@ export default {
 		.df(center, space-between);
 
 		.header-icon {
+			border-radius: 50%;
+			width: 80rpx;
+			height: 80rpx;
+			
 			image {
-				width: 68rpx;
-				border-radius: 50%;
+				width: 100%;
 			}
 		}
 		
@@ -121,8 +124,10 @@ export default {
 			.df(center);
 
 			.header-select-icon {
-				width: 53rpx;
+				width: 60rpx;
+				height: 60rpx;
 				border-radius: 50%;
+				background-color: #fff;
 
 				image {
 					width: 100%;
@@ -138,38 +143,6 @@ export default {
 				transition: border-color 0.35s ease-in-out;
 			}
 		}
-	}
-}
-
-.popup-container {
-	border-radius: 20rpx;
-	padding: 30rpx 25rpx 55rpx;
-	width: calc(100vw - 184rpx);
-
-	.df(center, flex-start);
-	flex-direction: column;
-
-	.popup-tit {
-		margin-bottom: 36rpx;
-		text-align: center;
-		font-size: @bodySize;
-		color: @bodyColor;
-		font-weight: bold;
-	}
-
-	.popup-content {
-		color: #666;
-		font-size: 24rpx;
-		line-height: 1.41;
-	}
-
-	.popup-close-btn {
-		margin-top: 126rpx;
-		border-radius: 50rpx;
-		padding: 30rpx 80rpx;
-		background-color: #fd7e1f;
-		color: #fff;
-		font-size: 26rpx;
 	}
 }
 </style>

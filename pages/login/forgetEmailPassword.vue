@@ -2,7 +2,7 @@
 	<view class="profix-page-container forget-email-pwd-page">
 		<scroll-view :scroll-y="true" :scroll-x="false" @scroll="scrollHandle" class="page-scroll">
 			<!-- <customHeader style="z-index: 0" /> -->
-			<customHeader :class="{ 'has-bg': headerBg }" style="position: fixed; top: 0; width: 100%" />
+			<customHeader :logoTag="true" :class="{ 'has-bg': headerBg }" style="position: fixed; top: 0; width: 100%" />
 			<view class="forget-email-pwd-scroll page-con">
 				<view class="login-tit">
 					<text>Movie software</text>

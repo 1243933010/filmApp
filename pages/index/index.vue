@@ -1,8 +1,8 @@
 <template>
-	<view class="profix-page-container index-page">
+	<view class="profix-page-container index-page has-tabbar">
 		<scroll-view :scroll-y="true" :scroll-x="false" @scroll="scrollHandle" class="page-scroll">
 			<!-- TODO -->
-			<customHeader headerText="Film and Television Group" :class="{'has-bg': headerBg}" style="position: fixed; top: 0; z-index: 1" :above="true" />
+			<customHeader headerText="Film and Television Group" :logoTag="true" :class="{'has-bg': headerBg}" style="position: fixed; top: 0; z-index: 1" :above="true" />
 			<view class="index-scroll page-con">
 				<view class="banner">
 					<view class="pic">
@@ -56,19 +56,51 @@
 					<view class="product-list">
 						<view class="product-item" v-for="(item, index) in nftList" :key="index">
 							<view class="product-img pic">
-								<image src="@/static/image/index/goodsImg.png" mode="widthFix" class="img" @click="goProductDetail(item)"></image>
+								<image src="@/static/image/goodsImg1.png" mode="widthFix" class="img" @click="goProductDetail(item)"></image>
 							</view>
 							<view class="product-info">
 								<view class="product-tit">{{ item.nft_name }}</view>
 								<view class="product-time">$ {{ item.money * 1 }}</view>
+								<!-- TODO -->
 								<view class="product-desc">Jianye Times Cinema</view>
 							</view>
 						</view>
 					</view>
 				</view>
+				
+				<view class="film-h-list">
+					<view class="tit">
+						<!-- TODO -->
+						<text class="left">More movies and television</text>
+						<text class="right">more</text>
+					</view>
+					<scroll-view scroll-x="true" class="film-scroll">
+						<view class="product-list">
+							<!-- nftList 暂时先用的这个数组, 后面可以声明一个新的数组, 记得处理likeIcon -->
+							<view class="product-item" v-for="(item, index) in nftList" :key="index">
+								<view class="product-img pic">
+									<image src="@/static/image/goodsImg1.png" mode="widthFix" class="img" @click="goProductDetail(item)"></image>
+									<view class="like-price">
+										<!-- TODO -->
+										<view class="price-btn">From $39</view>
+										<view class="icon pic" @click="likekHanle(item)">
+											<img :src="item.likeIcon" class="img" />
+										</view>
+									</view>
+								</view>
+								<view class="product-info">
+									<view class="product-tit">{{ item.nft_name }}</view>
+									<view class="product-time">$ {{ item.money * 1 }}</view>
+									<!-- TODO -->
+									<view class="product-desc">建业时代影城</view>
+								</view>
+							</view>
+						</view>
+					</scroll-view>
+				</view>
 			</view>
 		</scroll-view>
-		<uni-popup ref="popup" type="center" background-color="#fff">
+		<uni-popup ref="popup" type="center" background-color="transparent">
 			<view class="popup-container">
 				<view class="popup-tit">{{ newsList[0].name }}</view>
 				<view class="popup-content">
@@ -84,6 +116,8 @@
 import customHeader from "@/components/customHeader/customHeader.vue";
 import { $request } from "@/utils/request.js";
 import { setTabbar } from "@/utils/utils.js";
+import likeIcon from "@/static/image/icon/like.png";
+import likeFillIcon from "@/static/image/icon/like-fill.png";
 export default {
 	components: { customHeader },
 	data() {
@@ -94,7 +128,8 @@ export default {
 			nftList: [],
 			linkInfo: {},
 			above: true,
-			headerBg: false
+			headerBg: false,
+			
 		};
 	},
 	onLoad() {},
@@ -126,22 +161,22 @@ export default {
 		menuList() {
 			return [
 				{
-					iconUrl: "../../static/img/icon/index/11.png",
+					iconUrl: "../../static/image/index/menu1.png",
 					tit: "Platform Rewards", // TODO
 					link: "/pages/index/abloutList",
 				},
 				{
-					iconUrl: "../../static/img/icon/index/22.png",
+					iconUrl: "../../static/image/index/menu2.png",
 					tit: "VIP level", // TODO
 					link: "/pages/index/qualifications",
 				},
 				{
-					iconUrl: "../../static/img/icon/index/33.png",
+					iconUrl: "../../static/image/index/menu3.png",
 					tit: "Invite friends", // TODO
 					link: "/pages/index/activityInfo1",
 				},
 				{
-					iconUrl: "../../static/img/icon/index/44.png",
+					iconUrl: "../../static/image/index/menu4.png",
 					tit: "Download the app", // TODO
 					link: "/pages/index/storageLevel",
 				},
@@ -157,6 +192,9 @@ export default {
 		this.linkObj();
 	},
 	methods: {
+		likekHanle(likeItem) {
+			likeItem.likeIcon === likeFillIcon ? likeItem.likeIcon = likeIcon : likeItem.likeIcon = likeFillIcon;
+		},
 		scrollHandle(event) {
 			const { scrollTop } = event.detail;
 			if (scrollTop >= 50) {
@@ -170,7 +208,6 @@ export default {
 			// console.log(res.data);
 			if (res.data.code == 0) {
 				// console.log(this.menuList);
-				// this.menuList[2][0].link = res.data.data.app_download_url.val
 				this.linkInfo = res.data.data;
 				// console.log(this.menuList);
 			}
@@ -182,8 +219,11 @@ export default {
 			// console.log(res);
 			this.loading = false;
 			if (res.data.code === 0) {
-				this.nftList = res.data.data.data;
-				// console.log(this.nftList);
+				this.nftList = res.data.data.data.map(item => {
+					item.likeIcon = likeIcon;
+					return item;
+				});
+				console.log(this.nftList);
 			}
 		},
 		newLink(item) {
@@ -288,6 +328,7 @@ export default {
 
 	.index-scroll {
 		padding: 0;
+		background: #1E1F28;
 		
 		.banner {
 			margin-left: -30rpx;
@@ -306,9 +347,8 @@ export default {
 
 			.left-tit {
 				margin-right: 38rpx;
-				border-radius: 0 30px 30px 0;
-				padding: 10rpx 30rpx;
-				background-color: #FE6251;
+				padding: 10rpx 14rpx 10rpx 26rpx;
+				background: url('@/static/image/index/news.png') no-repeat center center / 100% 100%;
 				color: #1E1F28;
 				font-size: 22rpx;
 				font-weight: bold;
@@ -412,6 +452,75 @@ export default {
 			}
 		}
 
+		.product-list {
+			margin-left: -7.5rpx;
+			margin-right: -7.5rpx;
+			.df(stretch, flex-start);
+
+			.product-item {
+				padding:0 7.5rpx 40rpx;
+				border-radius: 8rpx;
+				width: 33.33%;
+				overflow: hidden;
+
+				.product-img {
+					border-radius: 20rpx;
+					width: 100%;
+					background-color: #e8e8e8;
+					position: relative;
+					
+					.like-price {
+						position: absolute;
+						left: 6rpx;
+						right: 6rpx;
+						bottom: 10rpx;
+						
+						.df(center, space-between);
+						
+						.price-btn {
+							border-radius: 10rpx;
+							padding: 8rpx 12rpx;
+							color: #fff;
+							font-size: 24rpx;
+							line-height: 1.166;
+							background-image: linear-gradient( 180deg, #FE0A49 0%, #FD2D45 100%);
+						}
+						
+						.icon {
+							width: 34rpx;
+						}
+					}
+				}
+
+				.product-info {
+					.product-tit {
+						.vertical(2);
+						margin-top: 10rpx;
+						color: #fff;
+						font-size: 24rpx;
+						line-height: 1.375;
+						font-weight: 800;
+					}
+
+					.product-time {
+						color: #D32B56;
+						font-size: 20rpx;
+						line-height: 1.3;
+					}
+					
+					.product-desc {
+						font-size: 20rpx;
+						line-height: 1.4;
+						color: #C0C3D2;
+					}
+				}
+
+				&:nth-child(2n) {
+					margin-right: 0;
+				}
+			}
+		}
+
 		.product-container {
 			padding-left: 30rpx;
 			padding-right: 30rpx;
@@ -433,89 +542,48 @@ export default {
 					line-height: 1.375;
 				}
 			}
-
+			
 			.product-list {
-				margin-left: -7.5rpx;
-				margin-right: -7.5rpx;
-				.df(stretch, flex-start);
 				flex-wrap: wrap;
-
-				.product-item {
-					padding:0 7.5rpx 40rpx;
-					border-radius: 8rpx;
-					width: 33.33%;
-					overflow: hidden;
-
-					.product-img {
-						border-radius: 20rpx;
-						width: 100%;
-						background-color: #e8e8e8;
-					}
-
-					.product-info {
-						.product-tit {
-							.vertical(2);
-							margin-top: 10rpx;
-							color: #fff;
-							font-size: 24rpx;
-							line-height: 1.375;
-							font-weight: 800;
-						}
-
-						.product-time {
-							color: #D32B56;
-							font-size: 20rpx;
-							line-height: 1.3;
-						}
+			}
+		}
+		
+		.film-h-list {
+			.tit {
+				margin-bottom: 20rpx;
+				padding-left: 30rpx;
+				padding-right: 30rpx;
+				color: #C0C3D2;
+				
+				.df(baseline, space-between);
+				
+				.left {
+					font-size: 30rpx;
+					line-height: 1.4;
+					font-weight: bold;
+				}
+				
+				.right {
+					font-size: 24rpx;
+					line-height: 1.375;
+				}
+			}
+			
+			.film-scroll {
+				width: 100%;
+			
+				.product-list {
+					.product-item {
+						width: 30%;
+						flex-shrink: 0;
 						
-						.product-desc {
-							font-size: 20rpx;
-							line-height: 1.4;
-							color: #C0C3D2;
+						&:first-child {
+							margin-left: 30rpx;
 						}
-					}
-
-					&:nth-child(2n) {
-						margin-right: 0;
 					}
 				}
 			}
 		}
-	}
-}
-.popup-container {
-	border-radius: 20rpx;
-	padding: 30rpx 25rpx 55rpx;
-	width: calc(100vw - 184rpx);
-
-	.df(center, flex-start);
-	flex-direction: column;
-
-	.popup-tit {
-		margin-bottom: 36rpx;
-		text-align: center;
-		font-size: @bodySize;
-		color: @bodyColor;
-		font-weight: bold;
-	}
-
-	.popup-content {
-		color: #666;
-		font-size: 24rpx;
-		line-height: 1.41;
-		// height: 100rpx;
-		max-height: 500rpx;
-		overflow-y: scroll;
-	}
-
-	.popup-close-btn {
-		margin-top: 46rpx;
-		border-radius: 50rpx;
-		padding: 30rpx 80rpx;
-		background-color: #fd7e1f;
-		// background: linear-gradient(90deg, #B8DDDE 0%, #DBEBEB 100%);
-		color: #fff;
-		font-size: 26rpx;
 	}
 }
 </style>
