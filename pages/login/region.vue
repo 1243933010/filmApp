@@ -1,332 +1,282 @@
 <template>
 	<view class="profix-page-container region-page">
-		<customHeader style="z-index: 0" />
-		<customHeader style="position: fixed; top: 0; width: 100%" />
-		<view class="region-scroll page-scroll">
-			<view class="logo pic">
-				<image src="../../static/img/logo.jpg" mode="widthFix" class="img"></image>
+		<scroll-view :scroll-y="true" :scroll-x="false" @scroll="scrollHandle" class="page-scroll">
+			<!-- <customHeader style="z-index: 0" /> -->
+			<customHeader :class="{ 'has-bg': headerBg }" style="position: fixed; top: 0; width: 100%" />
+			<view class="region-scroll page-con">
+				<view class="login-tit">
+					<text>Movie software</text>
+				</view>
+
+				<view class="form-container">
+					<!-- TODO -->
+					<label for="account">邮箱</label>
+					<view class="input-con account">
+						<view class="inp">
+							<!-- TODO -->
+							<input type="mail" name="account" v-model="formData.email" placeholder="请输入邮箱" />
+						</view>
+					</view>
+
+					<!-- TODO -->
+					<label for="pwd">验证码</label>
+					<view class="input-con invite-code">
+						<view class="inp">
+							<!-- TODO -->
+							<input type="text" name="pwd" v-model="formData.captcha_code" placeholder="请输入密码" />
+						</view>
+						<!-- TODO -->
+						<button class="invite-btn" v-if="typeof codeText == 'number'">{{ codeText }}s</button>
+						<button class="invite-btn" v-if="typeof codeText == 'string'" @click="handleTime">获取邀请码</button>
+					</view>
+
+					<!-- TODO -->
+					<label for="pwd">密码</label>
+					<view class="input-con password">
+						<view class="inp">
+							<!-- TODO -->
+							<input type="text" name="pwd" v-model="formData.password" :password="pwdType" placeholder="请输入密码" />
+							<view class="eye-icon" :class="{ close: pwdType }" @click="handleEye"></view>
+						</view>
+					</view>
+
+					<!-- TODO -->
+					<label for="account">邀请码</label>
+					<view class="input-con account">
+						<view class="inp">
+							<!-- TODO -->
+							<input type="number" name="account" v-model="formData.invitation_code" placeholder="请输入邀请码" />
+						</view>
+					</view>
+
+					<view class="btn-list">
+						<!-- TODO -->
+						<button class="button login-btn" :disabled="!(formData.email && formData.captcha_code && formData.password)" @click="region">注册</button>
+						<!-- TODO -->
+						<button class="button region-btn" @click="goPage(`/pages/login/emailLogin`)">已有账号，请前往登录</button>
+					</view>
+				</view>
 			</view>
-
-			<view class="form-container">
-				<view class="form-tit">PUTH GROUP</view>
-
-				<view class="input-con password email">
-					<view class="image-icon"></view>
-					<view class="inp">
-						<input type="text" v-model="formData.email" 
-							:placeholder="$t('login.email')" />
-					</view>
-
-				</view>
-				
-				<view class="input-con password">
-					<view class="image-icon"></view>
-					<view class="inp">
-						<input type="text" v-model="formData.captcha_code"  :placeholder="$t('login.code')" />
-					</view>
-					<!-- <view class="eye-icon" :class="{ close: pwdType }" @click="handleEye"></view> -->
-					<view class="get" v-if="typeof codeText =='number'"  >{{codeText}}</view>
-					<view class="get"  v-if="typeof codeText =='string'"  @click="handleTime">{{codeLocale}}</view>
-				</view>
-
-				<view class="input-con password">
-					<view class="image-icon"></view>
-					<view class="inp">
-						<input type="text" v-model="formData.password" :password="pwdType"
-							:placeholder="$t('login.pwdPlaceholder')" />
-					</view>
-					<view class="eye-icon" :class="{ close: pwdType }" @click="handleEye"></view>
-				</view>
-
-				<view class="input-con invite-code">
-					<view class="image-icon"></view>
-					<view class="inp">
-						<input type="text" v-model="formData.invitation_code"
-							:placeholder="$t('region.invitePlaceholder')" />
-					</view>
-					<view class="eye-icon"></view>
-				</view>
-
-				<view class="btn-list">
-					<button class="button login-btn" @click="region">{{ $t("region.btn1") }}</button>
-				  <button class="button login-btn" @click="goRegion">{{ $t("login.region2") }}</button>
-					<button class="button region-btn" @click="regionBtn">{{ $t("region.btn2") }}</button>
-				</view>
-			</view>
-		</view>
+		</scroll-view>
 	</view>
 </template>
 
 <script>
-	import CustomHeader from "@/components/customHeader/customHeader.vue";
-	import {
-		$request
-	} from "@/utils/request.js";
-	export default {
-		components: {
-			CustomHeader,
+import CustomHeader from "@/components/customHeader/customHeader.vue";
+import { $request } from "@/utils/request.js";
+export default {
+	name: "邮箱注册",
+	components: {
+		CustomHeader,
+	},
+	data() {
+		return {
+			pwdType: true,
+			timeFnc: null,
+			codeText: "",
+			formData: {
+				mobile: "", // 手机号
+				password_confirmation: "", // 确认密码
+				invitation_code: "", // 邀请码
+				password: "", // 密码
+			},
+			headerBg: false,
+		};
+	},
+	onLoad(e) {
+		if (e.invitation_code) {
+			this.formData.invitation_code = e.invitation_code;
+		}
+	},
+	computed: {
+		codeLocale() {
+			return this.$t("login.get-code");
 		},
-		data() {
-			return {
-				pwdType: true,
-				timeFnc: null,
-				codeText: '',
-				formData: {
-					mobile: "",
-					password_confirmation: "",
-					invitation_code: "",
-					password: "",
-				},
-			};
+	},
+	mounted() {
+		this.codeText = this.$t("login.get-code");
+	},
+	methods: {
+		goPage(url) {
+			uni.navigateTo({
+				url,
+			});
 		},
-		onLoad(e) {
-			if (e.invitation_code) {
-				this.formData.invitation_code = e.invitation_code;
+		scrollHandle(event) {
+			const { scrollTop } = event.detail;
+			if (scrollTop >= 50) {
+				this.headerBg = true;
+			} else {
+				this.headerBg = false;
 			}
 		},
-		computed:{
-			codeLocale(){
-				return this.$t("login.get-code");
+		goRegion() {
+			uni.navigateTo({
+				url: `./mobileRegion?invitation_code=${this.formData.invitation_code}`,
+			});
+		},
+		handleTime() {
+			if (!this.formData.email) {
+				uni.showToast({
+					icon: "none",
+					title: this.$t("login.input-email"),
+				});
+				return;
 			}
+			if (typeof this.codeText == "number") {
+				return false;
+			}
+			console.log(typeof this.codeText == "number");
+			this.codeText = 60;
+			this.sendEmail();
+			this.timeFnc = setInterval(() => {
+				this.codeText--;
+				if (this.codeText == 0) {
+					this.codeText = this.$t("login.get-code");
+					clearInterval(this.timeFnc);
+					this.timeFnc = null;
+				}
+			}, 1000);
 		},
-		mounted() {
-			this.codeText = this.$t("login.get-code");
+		handleEye() {
+			this.pwdType = !this.pwdType;
 		},
-		methods: {
-			goRegion(){
-				uni.navigateTo({
-					url:`./mobileRegion?invitation_code=${this.formData.invitation_code}`
-				})
-			},
-			handleTime() {
-				if (!this.formData.email) {
-					uni.showToast({
-						icon: 'none',
-						title: this.$t("login.input-email")
-					})
-					return
-				}
-				if (typeof this.codeText == "number") {
-					return false
-				}
-				console.log(typeof this.codeText == "number")
-				this.codeText = 60;
-				this.sendEmail();
-				this.timeFnc = setInterval(() => {
-					this.codeText--;
-					if (this.codeText == 0) {
-						this.codeText = this.$t("login.get-code");
-						clearInterval(this.timeFnc);
-						this.timeFnc = null
-					}
-				}, 1000)
-			},
-			handleEye() {
-				this.pwdType = !this.pwdType;
-			},
-			async sendEmail() {
-				let res = await $request("sendEmail", {
-					to_email: this.formData.email,
-					template:'register'
-				})
-				console.log(res)
-				uni.showToast({
-					icon: "none",
-					title: res.data.msg,
-				});
-			},
-			async region() {
-				this.formData.password_confirmation = this.formData.password;
-				let data = await $request("emailRegister", this.formData);
-				uni.showToast({
-					icon: "none",
-					title: data.data.msg,
-				});
-				if (data.data.code == 0) {
-					uni.setStorageSync("token", `Bearer ${data.data.data.token}`);
-					uni.reLaunch({
-						url: "/pages/index/index",
-					});
-				}
-			},
-			regionBtn() {
+		async sendEmail() {
+			let res = await $request("sendEmail", {
+				to_email: this.formData.email,
+				template: "register",
+			});
+			console.log(res);
+			uni.showToast({
+				icon: "none",
+				title: res.data.msg,
+			});
+		},
+		async region() {
+			this.formData.password_confirmation = this.formData.password;
+			let data = await $request("emailRegister", this.formData);
+			uni.showToast({
+				icon: "none",
+				title: data.data.msg,
+			});
+			if (data.data.code == 0) {
+				uni.setStorageSync("token", `Bearer ${data.data.data.token}`);
 				uni.reLaunch({
-					url: "./emailLogin",
+					url: "/pages/index/index",
 				});
-			},
+			}
 		},
-	};
+		regionBtn() {
+			uni.reLaunch({
+				url: "./emailLogin",
+			});
+		},
+	},
+};
 </script>
 
-<style lang="less">
-	@import "../../static/less/variable.less";
+<style lang="less" scoped>
+@import "../../static/less/variable.less";
 
-	.region-page {
-		background: url("../../static/img/bg/gradient.png") no-repeat center center / 100% 100%;
-		width: 100vw;
+.region-page {
+	.region-scroll {
+		padding-top: 300rpx;
+		padding-bottom: 300rpx;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
 
-		.region-scroll {
-			height: 100%;
+		.login-tit {
+			margin-bottom: 64rpx;
+			max-width: 250rpx;
+			font-weight: 800;
+			font-size: 60rpx;
+			color: #ffffff;
+			text-align: center;
+			line-height: 1.2;
+		}
 
-			.logo {
-				margin: 170rpx auto 62rpx;
-				border-radius: 50%;
-				width: 140rpx;
+		.form-container {
+			width: 100%;
+			min-height: 10%;
+			flex-grow: 1;
+			color: #fff;
+
+			label {
+				margin-top: 36rpx;
+				line-height: 1.4;
+				font-size: 30rpx;
+				display: block;
 			}
 
-			.form-container {
-				padding: 65rpx 45rpx;
-				border-radius: 20rpx 20rpx 0 0;
-				background-color: #fff;
-				min-height: 10%;
-				flex-grow: 1;
+			.input-con {
+				margin-top: 28rpx;
 
-				.form-tit {
-					margin-bottom: 32rpx;
-					color: @bodyColor;
-					text-align: center;
-					font-size: 48rpx;
-					font-weight: bold;
+				.df(center, flex-start);
+
+				&.password {
+					.eye-icon {
+						width: 29rpx;
+						height: 22rpx;
+						background: url("../../static/img/icon/eye.png") no-repeat center center / 100%;
+						position: relative;
+						z-index: 1;
+
+						&.close {
+							background-image: url("../../static/img/icon/c_eye.png");
+						}
+					}
 				}
 
-				.input-con {
-					margin-top: 40rpx;
-					padding: 30rpx 28rpx;
+				.inp {
 					border-radius: 10rpx;
-					background-color: #f5f7fb;
-					position: relative;
+					padding: 30rpx 34rpx;
+					min-width: 10%;
+					flex-grow: 1;
 					.df(center, flex-start);
+					.glassBg();
 
-					.image-icon {
-						width: 35rpx;
-						height: 38rpx;
-						background: no-repeat center center / 100%;
-					}
-
-					.inp {
-						margin-left: 25rpx;
-						min-width: 10%;
+					input {
+						line-height: 1.4;
+						font-size: 30rpx;
+						position: relative;
+						z-index: 1;
 						flex-grow: 1;
 
-						input {}
-					}
-					.get{
-						position: absolute;
-						right: 0;
-						top: 0;
-						// width: 180rpx;
-						padding:0rpx 33rpx;
-						height: 100%;
-						// background: red;
-						background: linear-gradient(90deg, #0694B8 0%, #6BBDB4 100%);
-						border-radius: 10px;
-						display: flex;
-						justify-content: center;
-						align-items: center;
-						font-size: 26rpx;
-						color: #FFFFFF;
-					}
-
-					&.account {
-						.image-icon {
-							background-image: url("../../static/img/icon/phone.png");
-						}
-
-						.prefix-con {
-							position: relative;
-
-							.number-prefix {
-								margin-left: 22rpx;
-								margin-right: 25rpx;
-							}
-
-							.arrow {
-								width: 20rpx;
-								height: 12rpx;
-								background: url("../../static/img/icon/arrow.png") no-repeat center center / 100% 100%;
-
-								position: absolute;
-								right: 0;
-								top: 50%;
-								transform: translateY(-50%);
-							}
-						}
-					}
-
-					&.password {
-						.image-icon {
-							background-image: url("../../static/img/icon/clock.png");
-						}
-
-						.eye-icon {
-							width: 29rpx;
-							height: 22rpx;
-							background: url("../../static/img/icon/eye.png") no-repeat center center / 100%;
-
-							&.close {
-								background-image: url("../../static/img/icon/c_eye.png");
-							}
-						}
-					}
-					&.email {
-						.image-icon {
-							background-image: url("../../static/img/icon/email.png");
-						}
-					
-						.eye-icon {
-							width: 29rpx;
-							height: 22rpx;
-							background: url("../../static/img/icon/eye.png") no-repeat center center / 100%;
-					
-							&.close {
-								background-image: url("../../static/img/icon/c_eye.png");
-							}
-						}
-					}
-
-					&.invite-code {
-						.image-icon {
-							background-image: url("../../static/img/icon/invite.png");
-						}
-					}
-				}
-
-				.remember-me {
-					margin-top: 28rpx;
-					color: @descColor;
-
-					.df(center, flex-start);
-
-					.radio {
-						margin-right: 12rpx;
-						transform: scale(0.7);
-						font-size: @descSize;
-					}
-				}
-
-				.btn-list {
-					margin-top: 46rpx;
-
-					.button {
-						margin-top: 30rpx;
-						padding: 32rpx 20rpx;
-						width: 100%;
-						font-size: @descSize;
-
-						&.login-btn {
-							border-color: #383838;
+						&::placeholder {
 							color: #fff;
-							// background-color: #383838;
-							background: #383838;
 						}
+					}
+				}
 
-						border: 1px solid @descColor;
-						color: #383838;
+				.invite-btn {
+					.btn-box(10rpx, linear-gradient( 180deg, #F41B4B 0%, #ED4E49 100%));
+
+					margin-left: 12rpx;
+					padding: 29rpx;
+				}
+			}
+
+			.btn-list {
+				padding-left: 30rpx;
+				padding-right: 30rpx;
+				margin-top: 118rpx;
+
+				.button {
+					margin-top: 30rpx;
+					width: 100%;
+
+					&.login-btn {
+						.btn-box(50px, linear-gradient( 180deg, #F51B4C 0%, #ED4E49 100%));
 					}
 
-					&.region-btn {}
+					&.region-btn {
+						.btn-box(50px, transparent);
+						.glassBg();
+					}
 				}
 			}
 		}
 	}
+}
 </style>

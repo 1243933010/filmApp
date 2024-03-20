@@ -2,7 +2,7 @@
 	<view class="profix-page-container email-login-page">
 		<scroll-view :scroll-y="true" :scroll-x="false" @scroll="scrollHandle" class="page-scroll">
 			<!-- <customHeader style="z-index: 0" /> -->
-			<customHeader style="position: fixed; top: 0; width: 100%" />
+			<customHeader :class="{'has-bg': headerBg}" style="position: fixed; top: 0; width: 100%" />
 			<view class="email-login-scroll page-con">
 				<view class="login-tit">
 					<text>Movie software</text>
@@ -65,6 +65,7 @@
 		setTabbar
 	} from "@/utils/utils";
 	export default {
+		name: "邮箱登录",
 		components: {
 			CustomHeader,
 		},
@@ -78,6 +79,7 @@
 					email: "1243933010@qq.com",
 					password: "1234567",
 				},
+				headerBg: false
 			};
 		},
 		methods: {

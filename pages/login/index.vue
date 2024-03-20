@@ -66,6 +66,7 @@ import { $request } from "@/utils/request";
 import { setTabbar } from "@/utils/utils";
 
 export default {
+	name: "手机号登录",
 	components: {
 		CustomHeader,
 	},

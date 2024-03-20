@@ -77,20 +77,12 @@ export default {
 	transition: background-color 0.35s ease-in-out;
 
 	&.has-bg {
-		background-color: #fff;
+		background-color: rgba(0, 0, 0, .9);
 
 		.image-width {
 			padding-top: 44rpx;
 			width: 100%;
 			background-color: transparent;
-
-			.header {
-				.header-select {
-					.header-select-select {
-						border-top-color: #000;
-					}
-				}
-			}
 		}
 	}
 }

@@ -1,7 +1,7 @@
 <template>
 	<view class="profix-page-container email-verification-login-page">
 		<scroll-view :scroll-y="true" :scroll-x="false" @scroll="scrollHandle" class="page-scroll">
-			<customHeader style="position: fixed; top: 0; width: 100%" />
+			<customHeader :class="{'has-bg': headerBg}" style="position: fixed; top: 0; width: 100%" />
 			<view class="email-verification-login-scroll page-con">
 				<view class="login-tit">
 					<text>Movie software</text>
@@ -18,14 +18,14 @@
 					</view>
 
 					<!-- TODO -->
-					<label for="pwd">邀请码</label>
+					<label for="pwd">验证码</label>
 					<view class="input-con invite-code">
 						<view class="inp">
 							<!-- TODO -->
 							<input type="text" name="pwd" v-model="formData.captcha_code" placeholder="请输入密码" />
 						</view>
 						<!-- TODO -->
-						<button class="invite-btn">获取邀请码</button>
+						<button class="invite-btn">获取验证码</button>
 					</view>
 					<view class="other">
 						<view class="view1" @click="goPage('/pages/login/region')">
@@ -60,6 +60,7 @@
 		setTabbar
 	} from "@/utils/utils";
 	export default {
+		name: "邮箱邀请码登录",
 		components: {
 			CustomHeader,
 		},
@@ -73,6 +74,7 @@
 					login_type: '2',
 					captcha_code: ''
 				},
+				headerBg: false
 			};
 		},
 		computed:{

@@ -1,8 +1,8 @@
 <template>
 	<view class="profix-page-container index-page">
-		<scroll-view :scroll-y="true" :scroll-x="false" @scroll="scrollHandle" class="page-scroll has-tabbar">
+		<scroll-view :scroll-y="true" :scroll-x="false" @scroll="scrollHandle" class="page-scroll">
 			<!-- TODO -->
-			<customHeader headerText="Film and Television Group" style="position: fixed; top: 0; z-index: 1" :above="true" />
+			<customHeader headerText="Film and Television Group" :class="{'has-bg': headerBg}" style="position: fixed; top: 0; z-index: 1" :above="true" />
 			<view class="index-scroll page-con">
 				<view class="banner">
 					<view class="pic">
@@ -94,6 +94,7 @@ export default {
 			nftList: [],
 			linkInfo: {},
 			above: true,
+			headerBg: false
 		};
 	},
 	onLoad() {},

@@ -130,7 +130,7 @@ export default {
 }
 uni-page-body {
 	overflow: hidden;
-	height: 100vh;
+	height: calc(100vh - var(--tab-bar-height));
 }
 input {
 	margin: 0;
@@ -160,13 +160,13 @@ body {
 		
 		.page-con {
 			padding: 45rpx;
-		}
 
-		&.has-tabbar {
-			// #ifdef H5
-			// 用于处理tabbar
-			padding-bottom: 100rpx;
-			// #endif
+			&.has-tabbar {
+				// #ifdef H5
+				// 用于处理tabbar
+				padding-bottom: var(--tab-bar-height);
+				// #endif
+			}
 		}
 	}
 

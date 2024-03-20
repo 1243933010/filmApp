@@ -1,49 +1,53 @@
 <template>
-	<view class="profix-page-container region-page">
-		<customHeader style="z-index: 0" />
-		<customHeader style="position: fixed; top: 0; width: 100%" />
-		<view class="region-scroll page-scroll">
-			<view class="logo pic">
-				<image src="../../static/img/logo.jpg" mode="widthFix" class="img"></image>
+	<view class="profix-page-container mobile-region-page">
+		<scroll-view :scroll-y="true" :scroll-x="false" @scroll="scrollHandle" class="page-scroll">
+			<!-- <customHeader style="z-index: 0" /> -->
+			<customHeader :class="{ 'has-bg': headerBg }" style="position: fixed; top: 0; width: 100%" />
+			<view class="mobile-region-scroll page-con">
+				<view class="login-tit">
+					<text>Movie software</text>
+				</view>
+
+				<view class="form-container">
+					<!-- TODO -->
+					<label for="account">手机号</label>
+					<view class="input-con account">
+						<view class="inp">
+							<!-- TODO -->
+							<input type="number" name="account" v-model="formData.mobile" placeholder="请输入邮箱" />
+						</view>
+					</view>
+
+					<!-- TODO -->
+					<label for="pwd">密码</label>
+					<view class="input-con password">
+						<view class="inp">
+							<!-- TODO -->
+							<input type="text" name="pwd" v-model="formData.password" :password="pwdType" placeholder="请输入密码" />
+						</view>
+						<view class="eye-icon" :class="{ close: pwdType }" @click="handleEye"></view>
+					</view>
+					
+					<!-- TODO -->
+					<label for="account">邀请码</label>
+					<view class="input-con account">
+						<view class="inp">
+							<!-- TODO -->
+							<input type="number" name="account" v-model="formData.invitation_code" placeholder="请输入邀请码" />
+						</view>
+					</view>
+					
+					<view class="btn-list">
+						<!-- TODO -->
+						<button class="button login-btn" :disabled="!(formData.mobile && formData.password && formData.invitation_code)" @click="region">注册</button>
+						<!-- TODO -->
+						<button class="button region-btn" @click="goPage('/pages/login/forgetEmailPassword')">邮箱注册</button>
+						<!-- TODO -->
+						<button class="button region-btn" @click="goPage(`/pages/login/emailLogin`)">已有账号，请前往登录</button>
+					</view>
+				</view>
 			</view>
-
-			<view class="form-container">
-				<view class="form-tit">PUTH GROUP</view>
-
-				<view class="input-con account">
-					<view class="image-icon"></view>
-					<view class="prefix-con">
-						<view class="number-prefix" @click="goPhonePrefix">{{ formData.country_code }}</view>
-						<view class="arrow"></view>
-					</view>
-					<view class="inp">
-						<input type="number" v-model="formData.mobile" :placeholder="$t('login.phonePlaceholder')" />
-					</view>
-				</view>
-
-				<view class="input-con password">
-					<view class="image-icon"></view>
-					<view class="inp">
-						<input type="text" v-model="formData.password" :password="pwdType" :placeholder="$t('login.pwdPlaceholder')" />
-					</view>
-					<view class="eye-icon" :class="{ close: pwdType }" @click="handleEye"></view>
-				</view>
-
-				<view class="input-con invite-code">
-					<view class="image-icon"></view>
-					<view class="inp">
-						<input type="text" v-model="formData.invitation_code" :placeholder="$t('region.invitePlaceholder')" />
-					</view>
-					<view class="eye-icon"></view>
-				</view>
-
-				<view class="btn-list">
-					<button class="button login-btn" @click="region">{{ $t("region.btn1") }}</button>
-				     <button class="button login-btn" @click="goRegion">{{ $t("login.region") }}</button>
-					<button class="button region-btn" @click="regionBtn">{{ $t("region.btn2") }}</button>
-				</view>
-			</view>
-		</view>
+		</scroll-view>
 	</view>
 </template>
 
@@ -51,6 +55,7 @@
 import CustomHeader from "@/components/customHeader/customHeader.vue";
 import { $request } from "@/utils/request.js";
 export default {
+	name: "手机号注册",
 	components: {
 		CustomHeader,
 	},
@@ -64,6 +69,7 @@ export default {
 				password: "",
 				country_code: "+1",
 			},
+			headerBg: false
 		};
 	},
 	onLoad(e) {
@@ -78,10 +84,23 @@ export default {
 		});
 	},
 	methods: {
-		goRegion(){
+		goPage(url) {
 			uni.navigateTo({
-				url:`./region?invitation_code=${this.formData.invitation_code}`
-			})
+				url,
+			});
+		},
+		scrollHandle(event) {
+			const { scrollTop } = event.detail;
+			if(scrollTop >= 50) {
+				this.headerBg = true;
+			}else {
+				this.headerBg = false;
+			}
+		},
+		goRegion() {
+			uni.navigateTo({
+				url: `./region?invitation_code=${this.formData.invitation_code}`,
+			});
 		},
 		openpNumberPicker() {},
 		handleEye() {
@@ -117,90 +136,65 @@ export default {
 };
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
 @import "../../static/less/variable.less";
-.region-page {
-	background: url("../../static/img/bg/gradient.png") no-repeat center center / 100% 100%;
-	width: 100vw;
 
-	.region-scroll {
-		height: 100%;
+.mobile-region-page {
+	.mobile-region-scroll {
+		padding-top: 300rpx;
+		padding-bottom: 300rpx;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
 
-		.logo {
-			margin: 170rpx auto 62rpx;
-			border-radius: 50%;
-			width: 140rpx;
+		.login-tit {
+			margin-bottom: 64rpx;
+			max-width: 250rpx;
+			font-weight: 800;
+			font-size: 60rpx;
+			color: #ffffff;
+			text-align: center;
+			line-height: 1.2;
 		}
 
 		.form-container {
-			padding: 65rpx 45rpx;
-			border-radius: 20rpx 20rpx 0 0;
-			background-color: #fff;
+			width: 100%;
 			min-height: 10%;
 			flex-grow: 1;
+			color: #fff;
 
-			.form-tit {
-				margin-bottom: 32rpx;
-				color: @bodyColor;
-				text-align: center;
-				font-size: 48rpx;
-				font-weight: bold;
+			label {
+				margin-top: 36rpx;
+				line-height: 1.4;
+				font-size: 30rpx;
+				display: block;
 			}
 
 			.input-con {
-				margin-top: 40rpx;
-				padding: 30rpx 28rpx;
+				margin-top: 28rpx;
 				border-radius: 10rpx;
-				background-color: #f5f7fb;
+				padding: 30rpx 34rpx;
 
 				.df(center, flex-start);
-
-				.image-icon {
-					width: 35rpx;
-					height: 38rpx;
-					background: no-repeat center center / 100%;
-				}
+				.glassBg();
 
 				.inp {
-					margin-left: 25rpx;
 					min-width: 10%;
 					flex-grow: 1;
 
 					input {
-					}
-				}
-
-				&.account {
-					.image-icon {
-						background-image: url("../../static/img/icon/phone.png");
-					}
-
-					.prefix-con {
+						line-height: 1.4;
+						font-size: 30rpx;
 						position: relative;
+						z-index: 1;
 
-						.number-prefix {
-							margin-left: 22rpx;
-							margin-right: 25rpx;
-						}
-
-						.arrow {
-							width: 20rpx;
-							height: 12rpx;
-							background: url("../../static/img/icon/arrow.png") no-repeat center center / 100% 100%;
-
-							position: absolute;
-							right: 0;
-							top: 50%;
-							transform: translateY(-50%);
+						&::placeholder {
+							color: #fff;
 						}
 					}
 				}
 
 				&.password {
-					.image-icon {
-						background-image: url("../../static/img/icon/clock.png");
-					}
-
 					.eye-icon {
 						width: 29rpx;
 						height: 22rpx;
@@ -211,46 +205,38 @@ export default {
 						}
 					}
 				}
-
-				&.invite-code {
-					.image-icon {
-						background-image: url("../../static/img/icon/invite.png");
-					}
-				}
 			}
 
-			.remember-me {
-				margin-top: 28rpx;
-				color: @descColor;
+			.other {
+				padding-top: 40rpx;
+				width: 100%;
+				color: #1a9db7;
+				font-size: 26rpx;
+				.df(center, space-between);
+				color: #fff;
 
-				.df(center, flex-start);
-
-				.radio {
-					margin-right: 12rpx;
-					transform: scale(0.7);
-					font-size: @descSize;
+				.view1 {
+					font-size: 26rpx;
+					line-height: 1.4;
 				}
 			}
 
 			.btn-list {
-				margin-top: 46rpx;
+				padding-left: 30rpx;
+				padding-right: 30rpx;
+				margin-top: 118rpx;
 
 				.button {
 					margin-top: 30rpx;
-					padding: 32rpx 20rpx;
 					width: 100%;
-					font-size: @descSize;
 
 					&.login-btn {
-						border-color: #383838;
-						color: #fff;
-						// background-color: #383838;
-						background: linear-gradient(60deg, #0694b8 0%, #6bbdb4 100%);
+						.btn-box(50px, linear-gradient( 180deg, #F51B4C 0%, #ED4E49 100%));
 					}
 
 					&.region-btn {
-						border: 1px solid @descColor;
-						color: #383838;
+						.btn-box(50px, transparent);
+						.glassBg();
 					}
 				}
 			}

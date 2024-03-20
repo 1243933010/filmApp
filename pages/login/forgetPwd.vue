@@ -15,7 +15,7 @@
 				<view class="tab-content left" :class="{ active: tabVal === 1 }">
 					<view class="input-box">
 						<view class="input-label">
-							<view class="text">{{$t('app.loginPassword')}}</view>
+							<view class="text">{{ $t("app.loginPassword") }}</view>
 							<view class="eye-icon"></view>
 						</view>
 						<view class="inp-box">
@@ -29,12 +29,12 @@
 						</view>
 					</view>
 
-					<view class="save-btn" @click="saveHandle('changePassword')">{{$t('app.saveChanges')}}</view>
+					<view class="save-btn" @click="saveHandle('changePassword')">{{ $t("app.saveChanges") }}</view>
 				</view>
 				<view class="tab-content right" :class="{ active: tabVal === 0 }">
 					<view class="input-box">
 						<view class="input-label">
-							<view class="text">{{$t('app.transactionPassword')}}</view>
+							<view class="text">{{ $t("app.transactionPassword") }}</view>
 							<view class="eye-icon"></view>
 						</view>
 						<view class="inp-box" v-if="userInfo.pay_password">
@@ -44,17 +44,17 @@
 							<input type="text" v-model="payObj.pay_password" :placeholder="$t('app.password2')" />
 						</view>
 						<view class="inp-box" v-if="userInfo.pay_password">
-							<input type="text" v-model="payObj.pay_password_confirmation"  :placeholder="$t('app.password3')" />
+							<input type="text" v-model="payObj.pay_password_confirmation" :placeholder="$t('app.password3')" />
 						</view>
 						<view class="inp-box" v-if="!userInfo.pay_password">
-							<input type="text" v-model="payObj.pay_password1"  :placeholder="$t('app.password4')" />
+							<input type="text" v-model="payObj.pay_password1" :placeholder="$t('app.password4')" />
 						</view>
 						<view class="inp-box" v-if="!userInfo.pay_password">
-							<input type="text" v-model="payObj.pay_password_confirmation1"  :placeholder="$t('app.password3')" />
+							<input type="text" v-model="payObj.pay_password_confirmation1" :placeholder="$t('app.password3')" />
 						</view>
 					</view>
 
-					<view class="save-btn" @click="saveHandle('')">{{$t('app.saveChanges')}}</view>
+					<view class="save-btn" @click="saveHandle('')">{{ $t("app.saveChanges") }}</view>
 				</view>
 			</view>
 		</view>
@@ -70,31 +70,30 @@
 
 <script>
 import hxNavbar from "@/components/hx-navbar.vue";
-import {
-		$request,url as requestUrl
-	} from '@/utils/request.js'
+import { $request, url as requestUrl } from "@/utils/request.js";
 export default {
+	name: "忘记密码",
 	components: {
 		hxNavbar,
 	},
-	
+
 	data() {
 		return {
 			tabVal: 0,
-			loginObj:{
-				old_password:"",
-				password:'',
-				password_confirmation:''
+			loginObj: {
+				old_password: "",
+				password: "",
+				password_confirmation: "",
 			},
-			payObj:{
-				old_pay_password:"",
-				pay_password:"",
-				pay_password_confirmation:'',
-				
-				pay_password1:'',
-				pay_password_confirmation1:""
+			payObj: {
+				old_pay_password: "",
+				pay_password: "",
+				pay_password_confirmation: "",
+
+				pay_password1: "",
+				pay_password_confirmation1: "",
 			},
-			userInfo:{}
+			userInfo: {},
 		};
 	},
 	computed: {
@@ -108,62 +107,62 @@ export default {
 				backgroundImg: "../../static/img/header_tabber.png",
 			};
 		},
-		tabList(){
-			return [this.$t('app.loginPassword'), this.$t('app.transactionPassword')]
-		}
+		tabList() {
+			return [this.$t("app.loginPassword"), this.$t("app.transactionPassword")];
+		},
 	},
 	mounted() {
 		this.getUserInfo();
 	},
 	methods: {
 		async getUserInfo() {
-			let res = await $request('getUserInfo', {})
-			console.log(res)
+			let res = await $request("getUserInfo", {});
+			console.log(res);
 			if (res.data.code === 0) {
 				this.userInfo = res.data.data;
-				return
+				return;
 			}
 			uni.showToast({
-				icon: 'none',
-				title: res.data.msg
-			})
+				icon: "none",
+				title: res.data.msg,
+			});
 		},
 		changeTab(index) {
 			this.tabVal = index;
 		},
-		handleRes(res,num){
+		handleRes(res, num) {
 			uni.showToast({
-				icon:'none',
-				title:res.data.msg
-			})
-			if(res.data.code===0){
-				if(num){
-					console.log('----------------------')
+				icon: "none",
+				title: res.data.msg,
+			});
+			if (res.data.code === 0) {
+				if (num) {
+					console.log("----------------------");
 					// this.getUserInfo()
 					uni.setStorageSync("token", `Bearer ${res.data.data.token}`);
 				}
-				setTimeout(()=>{
+				setTimeout(() => {
 					uni.navigateBack({
-						delta:1
-					})
-				},1000)
+						delta: 1,
+					});
+				}, 1000);
 			}
 		},
 		async saveHandle(type) {
-			console.log(type)
-			if(type){
-				let res = await $request(type,{...this.loginObj})
-				this.handleRes(res,1)
-				return
+			console.log(type);
+			if (type) {
+				let res = await $request(type, { ...this.loginObj });
+				this.handleRes(res, 1);
+				return;
 			}
-			if(this.userInfo.pay_password){
-			let resp = await $request('changePayPassword',{...this.payObj})
-			this.handleRes(resp)
-			  return	
+			if (this.userInfo.pay_password) {
+				let resp = await $request("changePayPassword", { ...this.payObj });
+				this.handleRes(resp);
+				return;
 			}
-			
-			let respon = await $request('setPayPassword',{pay_password:this.payObj.pay_password1,pay_password_confirmation:this.payObj.pay_password_confirmation1})
-			this.handleRes(respon)
+
+			let respon = await $request("setPayPassword", { pay_password: this.payObj.pay_password1, pay_password_confirmation: this.payObj.pay_password_confirmation1 });
+			this.handleRes(respon);
 			// // 充值成功后的弹窗提示
 			// this.$refs.popup.open("center");
 
@@ -209,7 +208,7 @@ page {
 					.line {
 						border-radius: 5rpx;
 						// background-color: #fd7e1f;
-						background: linear-gradient(0deg, #0694B8 0%, #6BBDB4 100%);
+						background: linear-gradient(0deg, #0694b8 0%, #6bbdb4 100%);
 						height: 100%;
 
 						&.long {

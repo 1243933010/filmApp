@@ -1,9 +1,9 @@
 <template>
 	<view class="profix-page-container phone-prefix-page">
 		<view class="input">
-			<view class="" @click="back"><uni-icons type="left" size="30" ></uni-icons></view>
-			
-			<input @input="handleInput"   /> 
+			<view class="" @click="back"><uni-icons type="left" size="30"></uni-icons></view>
+
+			<input @input="handleInput" />
 			<view class=""></view>
 		</view>
 		<view class="phone-prefix-scroll page-scroll">
@@ -26,39 +26,37 @@
 import prefixSorted from "@/utils/phonePrefix.js";
 
 export default {
+	name: "手机号前缀选择",
 	data() {
 		return {
 			countries: {},
-			countries1:{}
+			countries1: {},
 		};
 	},
 	mounted() {
 		this.sorting();
 	},
 	methods: {
-		handleInput(e){
-			if(!e.detail.value){
+		handleInput(e) {
+			if (!e.detail.value) {
 				this.countries = this.countries1;
-				return
+				return;
 			}
 			let arr = Object.entries(this.countries1);
-			
-			let obj = {'':[]};
+
+			let obj = { "": [] };
 			let list = [];
-			arr.forEach(val=>{
+			arr.forEach(val => {
 				// console.log(val)
-				val[1].forEach(item=>{
-					if(item.prefix.includes(e.detail.value)){
+				val[1].forEach(item => {
+					if (item.prefix.includes(e.detail.value)) {
 						// console.log('--',val)
-						list.push(item)
-						
-						
+						list.push(item);
 					}
-				})
-				
-			})
-			obj['']=list;
-			this.countries= obj;
+				});
+			});
+			obj[""] = list;
+			this.countries = obj;
 			// if(e.detail.value.length==1){
 			// 	let arr1 = [];
 			// 	arr.forEach(val=>{
@@ -78,7 +76,7 @@ export default {
 			// 			arr2.push(val)
 			// 			this.countries= {}
 			// 			this.countries[key]=arr2
-						
+
 			// 		}
 			// 	})
 			// }
@@ -97,7 +95,7 @@ export default {
 			});
 
 			this.countries = categorizedCountries;
-			console.log("}}}",categorizedCountries)
+			console.log("}}}", categorizedCountries);
 			this.countries1 = categorizedCountries;
 		},
 		selectPrefix(prefix) {
@@ -108,32 +106,32 @@ export default {
 				},
 			});
 		},
-		back(){
-			uni.navigateBack({delta:1})
-		}
+		back() {
+			uni.navigateBack({ delta: 1 });
+		},
 	},
 };
 </script>
 
 <style lang="less">
-	.input{
-		
-		margin: 20rpx auto;
-		padding-top: 44px;
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		input{
-			width: 500rpx;
-			height: 70rpx;
-			border-radius: 30rpx;
-			text-align: center;
-			border: 1px solid #888;
-		}
+.input {
+	margin: 20rpx auto;
+	padding-top: 44px;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	input {
+		width: 500rpx;
+		height: 70rpx;
+		border-radius: 30rpx;
+		text-align: center;
+		border: 1px solid #888;
 	}
+}
 .profix-page-container {
 	.phone-prefix-scroll {
 		padding: 0;
+		background: transparent;
 
 		.classify-list {
 			.classify-item {
