@@ -10,7 +10,7 @@
 
 				<view class="form-container">
 					<!-- TODO -->
-					<label for="account">手机号</label>
+					<label for="account">{{$t('app.mobile')}}</label>
 					<view class="input-con account">
 						<view class="prefix-con" @click="openpNumberPicker">
 							<!-- 手机号前缀选择器 -->
@@ -19,16 +19,16 @@
 						</view>
 						<view class="inp">
 							<!-- TODO -->
-							<input type="email" name="account" v-model="formData.mobile" placeholder="请输入手机号" />
+							<input type="email" name="account" v-model="formData.mobile" :placeholder="$t('login.phonePlaceholder')" />
 						</view>
 					</view>
 
 					<!-- TODO -->
-					<label for="pwd">密码</label>
+					<label for="pwd">{{$t('app.password')}}</label>
 					<view class="input-con password">
 						<view class="inp">
 							<!-- TODO -->
-							<input type="text" name="pwd" v-model="formData.password" :password="pwdType" placeholder="请输入密码" />
+							<input type="text" name="pwd" v-model="formData.password" :password="pwdType" :placeholder="$t('login.pwdPlaceholder')" />
 						</view>
 						<view class="eye-icon" :class="{ close: pwdType }" @click="handleEye"></view>
 					</view>

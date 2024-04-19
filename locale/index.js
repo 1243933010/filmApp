@@ -5,7 +5,7 @@ import es from './uni-app.es.json'
 import ara from './uni-app.ara.json'
 export default {
 	en,
-	// 'zh-Hans': zhHans,
+	'zh-Hans': zhHans,
 	'fr': fr,
 	'es': es,
 	'ara': ara,

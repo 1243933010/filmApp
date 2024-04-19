@@ -36,11 +36,11 @@ export default {
 		return {
 			iStatusBarHeight: 0,
 			index: 0,
-			array: ["English", "Francés", "Español", " اللغة العربية"],
-			iconList: ["../../static/image/lang/eg.png", "../../static/image/lang/fr.png", "../../static/image/lang/es.png", "../../static/image/lang/asa.png"],
-			code: ["en", "fr", "es", "ara"],
+			array: ["English", "Francés", "Español", " اللغة العربية","zh-Hans"],
+			iconList: ["../../static/image/lang/eg.png", "../../static/image/lang/fr.png", "../../static/image/lang/es.png", "../../static/image/lang/asa.png", "../../static/img/cn.png"],
+			code: ["en", "fr", "es", "ara","zh-Hans"],
 			imgSrc: "../../static/image/lang/eg.png",
-			locale: { en: 0, fr: 1, es: 2, ara: 3 },
+			locale: { en: 0, fr: 1, es: 2, ara: 3,"zh-Hans":4 },
 		};
 	},
 	mounted() {

@@ -1,5 +1,5 @@
 import requestObj from '@/utils/requestObj.js'
-export let url = 'http://shop-v2.2302.goldval.top'
+export let url = 'http://dev.2404.goldval.top'
 export const $request = (requestName,params,headerType=0)=>{
 	let reqObj = requestObj[requestName];
 	let token = uni.getStorageSync('token');
