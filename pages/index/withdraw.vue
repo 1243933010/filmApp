@@ -1,282 +1,275 @@
 <template>
-  <view class="profix-page-container withdraw-page">
-    <hx-navbar :config="config" />
-    <view class="withdraw-scroll page-scroll">
-      <view class="title">{{ $t("withdraw.title") }}</view>
-      <view class="withdraw-box">
-        <view class="way-box">
-		<radio-group @change="radioChange">
-			<label class="uni-list-cell uni-list-cell-pd" v-for="(item, index) in info.withdrawal_network" :key="index">
-				<view class="tit" style="display: flex;flex-direction: row;align-items: center;">
-					<radio :value="item" :checked="index === current" />
-					<view>{{item}}</view>
+	<view class="profix-page-container withdraw-page">
+		<scroll-view scroll-y="true" class="page-scroll" @scroll="scrollHandle">
+			<hx-navbar :config="config" :class="{ 'has-bg': headerBg }" style="position: fixed; top: 0; left: 0; right: 0; z-index: 99" />
+			<view class="withdraw-scroll page-con">
+				<view class="bg">
+					<div class="pic">
+						<img src="@/static/image/mine/walletBg.png" mode="scaleToFill" class="img" />
+					</div>
 				</view>
-				
-			</label>
-		</radio-group>
-		</view>
-		<view class="way-box">
-		<!-- {{ $t("storageLevel.dollar") }}T-TEC 20 -->
-		<radio-group style="display: flex;flex-direction: row;" @change="radioChange1">
-			<label class="uni-list-cell uni-list-cell-pd" v-for="(item, index) in accountList" :key="index">
-				<view class="tit" style="display: flex;flex-direction: row;align-items: center;">
-					<radio :value="item.value" :checked="index === current1" />
-					<view>{{item.label}}</view>
+				<view class="withdraw-box">
+					<!-- TODO -->
+					<view class="way-box">美元T-TEC 20</view>
+					<view class="inp-box">
+						<input type="number" v-model="money" />
+					</view>
+					<view class="inp-box">
+						<input v-model="pay_password" :type="type" :placeholder="$t('withdraw.pwdPlaceholder')" />
+						<view class="eye-icon" @click="() => (type = type == 'password' ? 'text' : 'password')"></view>
+					</view>
+					<!-- TODO -->
+					<view class="box-tips">注：默认法定货币  1美元=1美元</view>
 				</view>
-				
-			</label>
-		</radio-group>
-		</view>
-        <view class="inp-box">
-          <input type="number" v-model="money" />
-        </view>
-        <view class="inp-box">
-          <input  v-model="pay_password" :type="type" :placeholder="$t('withdraw.pwdPlaceholder')" />
-          <view class="eye-icon" @click="()=>{type=type=='password'?'text':'password'}"></view>
-        </view>
-      </view>
-      <view class="tips">
-        <view class="tit">{{ $t("withdraw.tipsTit") }}</view>
-        <view class="tips-ul">
-			<!-- <view class="tips-item" v-for="(item,index) in info.labelList" :key="index">{{index+1}}、{{ item }}</view> -->
-			<view class="tips-item">{{ $t("withdraw.tips1") }}</view>
-			  <view class="tips-item">{{ $t("withdraw.tips2") }}</view>
-			  <view class="tips-item">{{ $t("withdraw.tips3") }}</view>
-			    <!-- <view class="tips-item">4.{{ $t("app.MinimumWithdrawalAmount") }}:{{info.withdraw_min_amount}}</view> -->
-			    <!-- <view class="tips-item">5.{{ $t("app.MaximumWithdrawalAmount") }}:{{info.withdraw_max_amount}}</view> -->
-      <!--  <view class="tips-item">{{ $t("withdraw.tips1") }}:{{info.withdraw_fee_ratio}}</view>
-          <view class="tips-item">{{ $t("withdraw.tips2") }}:{{info.withdraw_min_amount}}</view>
-          <view class="tips-item">{{ $t("withdraw.tips3") }}:{{info.withdraw_max_amount}}</view> -->
-		  <!-- <view class="tips-item">4、{{ $t("app.text5") }}{{info.withdraw_date_start_hour}}{{ $t("app.text6") }}{{info.withdraw_date_end_hour}}{{ $t("app.text7") }}</view> -->
-        </view>
-      </view>
+				<view class="tips">
+					<!-- TODO -->
+					<view class="tit">注意事项</view>
+					<view class="tips-ul">
+						<view class="tips-item">1.最低出金金额为12美元，提交出金时必须为整数例如:12美元20美元30美元40美元，以此类推。</view>
+						<view class="tips-item">2.取款手续费: 单笔取款1~300美元收取5%手续费，301~500美元收取3%手续费，501~999美元收取2%手续费，超过1000美元不收手续费。</view>
+						<view class="tips-item">3.取款时间:从周一到周五的10: 00到21: 00之间，撤离将在72小时内贷记。</view>
+					</view>
+				</view>
 
-      <button class="sub-btn" @click="subBtn">{{$t("withdraw.btnText")}}</button>
-    </view>
-  </view>
+				<view class="sub-btn" @click="subBtn">申请提现</view>
+			</view>
+		</scroll-view>
+	</view>
 </template>
 
 <script>
 import hxNavbar from "@/components/hx-navbar.vue";
 import { $request } from "@/utils/request";
 export default {
-  components: {
-    hxNavbar,
-  },
-  data() {
-    return {
-		info:{},
-		money:0,
-		pay_password:'',
-		current:0,
-		networkStr:'',
-		type:'password',
-		withdraw_type:'',
-		account_list:{},
-		accountList:[],
-		current1:0,
-		requestBool:true
-	};
-  },
-  computed: {
-    config() {
-      return {
-        title: this.$t("withdraw.pageTit"),
-        color: "#ffffff",
-        // backgroundColor: [1, "#24bdab"],
-        // 背景图片（array则为滑动切换背景图，string为单一背景图）
-        // backgroundImg: ['/static/xj.jpg','/static/logo.jpg'],
-        backgroundImg: "../../static/img/header_tabber.png",
-      };
-    },
-  },
-  onShow(){
-	  this.withdrawInfo();
-	  this.walletInfo();
-  },
-  methods:{
-	  radioChange(e){
-	  	console.log(e)
-	  	// this.networkStr = e.detail.value;
-	  },
-	  radioChange1(e){
-	  	console.log(e.detail.value)
-	  	this.withdraw_type = e.detail.value.withdraw_type;
-		this.networkStr = e.detail.value.bank_account;
-	  },
-	  async withdrawInfo(){
-		  let res = await $request('withdrawInfo',{})
-		  if(res.data.code===0){
-			  this.info = res.data.data;
-			  // this.networkStr= res.data.data.withdrawal_network[0]
-			  return
-		  }
-		  uni.showToast({
-		  	icon:'none',
-			title:res.data.msg
-		  })
-	  },
-	  async subBtn(){
-		  console.log(this.account_list.bank.bank_account,this.account_list.usdt.bank_account)
-		  if(!this.requestBool){
-			  return
-		  }
-		 
-		  if(!this.account_list.bank.bank_account&&!this.account_list.usdt.bank_account){
-			  uni.showToast({
-			  	icon:'none',
-				title:this.$t("wallet.text7")
-			  })
-			  setTimeout(()=>{
-				  uni.navigateTo({
-				  	url:'/pages/me/wallet'
-				  })
-			  },1500)
-			  return
-		  }
-		   this.requestBool = false;
-		  let res = await $request('withdrawCreate',
-		  {money:this.money,
-		  pay_password:this.pay_password,
-		  withdraw_address:this.networkStr,
-		  withdraw_type:this.withdraw_type},
-		  )
-		   this.requestBool = true;
-	      console.log(res)
-		  uni.showToast({
-		  	icon:'none',
-			title:res.data.msg
-		  })
-		  if(res.data.code===0){
-			  setTimeout(()=>{
-			  		 uni.navigateBack({delta:1})
-			  },1500)
-		  }
-	  },
-	  
-	  async walletInfo() {
-	  	const res = await $request("walletInfo");
-	  	const {
-	  		code,
-	  		data,
-	  		msg
-	  	} = res.data;
-	  
-	  	if (code !== 0) {
-	  		uni.showToast({
-	  			title: "钱包信息获取失败",
-	  			icon: "none",
-	  		});
-	  
-	  		return;
-	  	}
-	  
-	  	const {
-	  		balance,
-	  		account_list
-	  	} = data;
-	  	this.account_list = account_list;
-		this.accountList = [];
-		if(account_list.bank.bank_account){
-			this.accountList.push({value:account_list.bank,label:this.$t("app.bankCard")})
-			this.withdraw_type = account_list.bank.withdraw_type
-			this.networkStr = account_list.bank.bank_account;
-		}
-		if(account_list.usdt.bank_account){
-			this.accountList.push({value:account_list.usdt,label:'usdt'})
-			if(!this.withdraw_type){
-				this.withdraw_type = account_list.usdt.withdraw_type
-				this.networkStr = account_list.usdt.bank_account;
+	name: "提现",
+	components: {
+		hxNavbar,
+	},
+	data() {
+		return {
+			info: {},
+			money: 0,
+			pay_password: "",
+			current: 0,
+			networkStr: "",
+			type: "password",
+			withdraw_type: "",
+			account_list: {},
+			accountList: [],
+			current1: 0,
+			requestBool: true,
+			headerBg: false,
+		};
+	},
+	computed: {
+		config() {
+			return {
+				// TODO
+				title: "提现",
+				color: "#ffffff",
+				backgroundColor: "transparent",
+			};
+		},
+	},
+	onShow() {
+		this.withdrawInfo();
+		this.walletInfo();
+	},
+	methods: {
+		scrollHandle(event) {
+			const { scrollTop } = event.detail;
+			if (scrollTop >= 50) {
+				this.headerBg = true;
+			} else {
+				this.headerBg = false;
 			}
-		}
-	  },
-  }
+		},
+		radioChange(e) {
+			console.log(e);
+			// this.networkStr = e.detail.value;
+		},
+		radioChange1(e) {
+			console.log(e.detail.value);
+			this.withdraw_type = e.detail.value.withdraw_type;
+			this.networkStr = e.detail.value.bank_account;
+		},
+		async withdrawInfo() {
+			let res = await $request("withdrawInfo", {});
+			if (res.data.code === 0) {
+				this.info = res.data.data;
+				// this.networkStr= res.data.data.withdrawal_network[0]
+				return;
+			}
+			uni.showToast({
+				icon: "none",
+				title: res.data.msg,
+			});
+		},
+		async subBtn() {
+			console.log(this.account_list.bank.bank_account, this.account_list.usdt.bank_account);
+			if (!this.requestBool) {
+				return;
+			}
+
+			if (!this.account_list.bank.bank_account && !this.account_list.usdt.bank_account) {
+				uni.showToast({
+					icon: "none",
+					title: this.$t("wallet.text7"),
+				});
+				setTimeout(() => {
+					uni.navigateTo({
+						url: "/pages/me/wallet",
+					});
+				}, 1500);
+				return;
+			}
+			this.requestBool = false;
+			let res = await $request("withdrawCreate", { money: this.money, pay_password: this.pay_password, withdraw_address: this.networkStr, withdraw_type: this.withdraw_type });
+			this.requestBool = true;
+			console.log(res);
+			uni.showToast({
+				icon: "none",
+				title: res.data.msg,
+			});
+			if (res.data.code === 0) {
+				setTimeout(() => {
+					uni.navigateBack({ delta: 1 });
+				}, 1500);
+			}
+		},
+
+		async walletInfo() {
+			const res = await $request("walletInfo");
+			const { code, data, msg } = res.data;
+
+			if (code !== 0) {
+				uni.showToast({
+					title: "钱包信息获取失败",
+					icon: "none",
+				});
+
+				return;
+			}
+
+			const { balance, account_list } = data;
+			this.account_list = account_list;
+			this.accountList = [];
+			if (account_list.bank.bank_account) {
+				this.accountList.push({ value: account_list.bank, label: this.$t("app.bankCard") });
+				this.withdraw_type = account_list.bank.withdraw_type;
+				this.networkStr = account_list.bank.bank_account;
+			}
+			if (account_list.usdt.bank_account) {
+				this.accountList.push({ value: account_list.usdt, label: "usdt" });
+				if (!this.withdraw_type) {
+					this.withdraw_type = account_list.usdt.withdraw_type;
+					this.networkStr = account_list.usdt.bank_account;
+				}
+			}
+		},
+	},
 };
 </script>
 
-<style lang="less" >
+<style lang="less">
 @import "../../static/less/variable.less";
-uni-page-body {
-  height: auto;
-}
-page {
-  // background: linear-gradient(0deg, #ffa563 0%, #fd7e1f 100%);
-  // background-color: #fd7f20;
-  background: linear-gradient(0deg, #0694B8 0%, #6BBDB4 100%);
-}
-.uni-list-cell{
-	margin-right: 20rpx;
-}
+
 .withdraw-page {
-  .withdraw-scroll {
-    padding-bottom: 20rpx;
-    color: #fffeff;
+	.page-scroll {
+		background: #1e1f28;
+	}
 
-    .title {
-      margin-top: 110rpx;
-      font-size: 36rpx;
-      text-align: center;
-      margin-bottom: 30rpx;
-    }
+	.withdraw-scroll {
+		padding-top: 120rpx;
+		.df(center, flex-start, column);
 
-    .withdraw-box {
-      border-radius: 20rpx;
-      padding: 42rpx 30rpx 85rpx;
-      background-color: #fff;
+		.bg {
+			margin-bottom: -10rpx;
+			padding: 0 30rpx;
+			height: 72rpx;
+			width: 100%;
 
-      .way-box {
-        margin-bottom: 36rpx;
-        color: #fd7e1f;
-		display: flex;
-		flex-direction: row;
-		align-items: center;
-      }
+			.pic {
+				border-radius: 20rpx 20rpx 0 0;
+				height: 100%;
 
-      .inp-box {
-        margin-bottom: 20rpx;
-        border-radius: 10rpx;
-        padding: 30rpx 40rpx;
-        background-color: #f5f4f9;
+				img {
+					height: 100%;
+				}
+			}
+		}
 
-        .df(center, space-between);
+		.withdraw-box {
+			margin-bottom: 40rpx;
+			border-radius: 20rpx;
+			padding: 30rpx 42rpx;
+			background-color: #2F303B;
+			position: relative;
+			z-index: 1;
+			width: 100%;
 
-        input {
-          color: @bodyColor;
-        }
+			.way-box {
+				margin-bottom: 62rpx;
+				color: #fff;
+				font-size: 24rpx;
+				line-height: 1.375;
+			}
 
-        .eye-icon {
-          width: 29rpx;
-          height: 22rpx;
-          background: url("../../static/img/icon/eye.png") no-repeat center center / 100%;
-        }
-      }
-    }
+			.inp-box {
+				margin-bottom: 32rpx;
+				border-radius: 10rpx;
+				padding: 22rpx 28rpx;
+				background-color: #1E1F28;
 
-    .tips {
-      margin-top: 40rpx;
+				.df(center, space-between);
 
-      .tit {
-        margin-bottom: 34rpx;
-        font-size: @bodySize;
-      }
+				input {
+					color: #C0C3D2;
+					font-size: 30rpx;
+					line-height: 1.4;
+				}
 
-      .tips-ul {
-        .tips-item {
-          font-size: @descSize;
-          line-height: 1.38;
-        }
-      }
-    }
+				.eye-icon {
+					width: 28rpx;
+					height: 22rpx;
+					background: url("../../static/img/icon/eye.png") no-repeat center center / 100%;
+				}
+			}
+			
+			.box-tips {
+				font-size: 24rpx;
+				color: #C0C3D2;
+				line-height: 1.375;
+			}
+		}
 
-    .sub-btn {
-      margin: 100rpx auto 0;
-      padding: 10rpx;
-      // background-color: #383838;
-	  background-color: #EAF9FF;
-      color: #0E97B7;
-      font-size: @descSize;
-      width: calc(100vw - 236rpx);
-    }
-  }
+		.tips {
+			margin-bottom: 117rpx;
+			width: 100%;
+
+			.tit {
+				margin-bottom: 20rpx;
+				font-size: 24rpx;
+				line-height: 1.375;
+				color: #C0C3D2;
+			}
+
+			.tips-ul {
+				.tips-item {
+					margin-bottom: 8rpx;
+					font-size: 24rpx;
+					line-height: 1.375;
+					color: #C0C3D2;
+				}
+			}
+		}
+
+		.sub-btn {
+			.btn-box(50rpx, linear-gradient( 180deg, #F51B4C 0%, #ED4E49 100%));
+			max-width: 400rpx;
+			width: 100%;
+			text-align: center;
+		}
+	}
 }
 </style>

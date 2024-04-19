@@ -1,23 +1,27 @@
 <template>
 	<view class="profix-page-container deal-page">
-		<hx-navbar :config="config" />
-		<view class="deal-scroll page-scroll">
-			<scroll-view scroll-y="true" class="tab-view">
-				<view class="tab-list">
-					<view class="tab-item" :class="{ active: checkTab === index }" v-for="(item, index) in tabList" :key="index" @click="changeTab(item,index)">{{ item.title }}</view>
-				</view>
-			</scroll-view>
-
-			<view class="deal-list" >
-				<view class="list-item" v-for="item in dealList" :key="index">
-					<view class="left">
-						<view class="top">{{item.type_txt||item.status_text}}</view>
-						<view class="bottom">{{item.updated_at||item.created_at}}</view>
+		<scroll-view scroll-y="true" class="page-scroll" @scroll="scrollHandle">
+			<hx-navbar :config="config" :class="{ 'has-bg': headerBg }" style="position: fixed; top: 0; left: 0; right: 0; z-index: 99" />
+			<view class="deal-scroll page-con">
+				<scroll-view scroll-y="true" class="tab-view">
+					<view class="tab-list">
+						<view class="tab-item" :class="{ active: checkTab === index }" v-for="(item, index) in tabList" :key="index" @click="changeTab(item,index)">{{ item.title }}</view>
 					</view>
-					<view class="right">{{item.money||item.amount*1}}</view>
+				</scroll-view>
+
+				<view class="deal-list" >
+					<view class="list-item" v-for="item in dealList" :key="index">
+						<view class="left">
+							<view class="top">{{item.type_txt||item.status_text}}</view>
+							<view class="bottom">{{item.updated_at||item.created_at}}</view>
+						</view>
+						<view class="right">+{{item.money||item.amount*1}}</view>
+					</view>
+					<!-- TODO -->
+					<view class="tips">暂无内容</view>
 				</view>
 			</view>
-		</view>
+		</scroll-view>
 	</view>
 </template>
 
@@ -25,6 +29,7 @@
 import hxNavbar from "@/components/hx-navbar.vue";
 import { $request } from "@/utils/request";
 export default {
+	name: "财务细节",
 	components: {
 		hxNavbar,
 	},
@@ -38,18 +43,16 @@ export default {
 			},
 			requestUrl:['','rebate','buy_vip','',''],
 			url:'userAccount',
-			requestBool:true
+			requestBool:true,
+			headerBg: false,
 		};
 	},
 	computed: {
 		config() {
 			return {
-				title: this.$t("deal.pageTit"),
+				title: "财务细节",
 				color: "#ffffff",
-				// backgroundColor: [1, "#24bdab"],
-				// 背景图片（array则为滑动切换背景图，string为单一背景图）
-				// backgroundImg: ['/static/xj.jpg','/static/logo.jpg'],
-				backgroundImg: "../../static/img/header_tabber.png",
+				backgroundColor: "transparent",
 			};
 		},
 		tabList() {
@@ -70,6 +73,14 @@ export default {
 		this.requestFnc(this.url,this.requestUrl[this.checkTab]);
 	},
 	methods: {
+		scrollHandle(event) {
+			const { scrollTop } = event.detail;
+			if (scrollTop >= 50) {
+				this.headerBg = true;
+			} else {
+				this.headerBg = false;
+			}
+		},
 		changeTab(item,index) {
 			this.checkTab = index;
 			this.dealPage.page = 1;
@@ -100,31 +111,37 @@ export default {
 <style lang="less" scoped>
 @import "../../static/less/variable.less";
 
-page {
-	background-color: #fff;
-}
-
 .deal-page {
-	background-color: #fff;
+	.page-scroll {
+		background: #1e1f28;
+	}
 
 	.deal-scroll {
+		padding-top: 120rpx;
+		
 		.tab-view {
 			position: fixed;
 			left: 0;
+			
+			border-radius: 0 10rpx 10rpx 0;
 			width: 24%;
-			height: calc(100vh - 138rpx);
+			height: calc(100vh - 120rpx);
 			// #ifdef H5
-			height: calc(100vh - 88rpx);
+				height: calc(100vh - 120rpx);
 			// #endif
-			background-color: #f7f7f7;
+			background-color: #2F303B;
 			text-align: center;
+			overflow: hidden;
 
 			.tab-item {
 				padding: 32rpx 0;
 				font-size: 24rpx;
+				color: #C0C3D2;
+				line-height: 1.375;
 
 				&.active {
-					background-color: #fff;
+					background-image: linear-gradient(to right, #F3254B 0%, #2F303B 100%);
+					color: #fff;
 				}
 			}
 		}
@@ -136,32 +153,45 @@ page {
 
 			.list-item {
 				margin-bottom: 20rpx;
-				border-radius: 10rpx;
-				padding: 30rpx 34rpx;
-				border: 1px solid #fd7e1f;
+				border-radius: 20rpx;
+				border: 1px solid #707070;
+				padding: 30rpx 38rpx;
+				background-color: #2F303B;
 
 				.df(center, space-between);
 
 				.left {
 					margin-right: 20rpx;
-					color: #504f5e;
 					
 					.top {
-						margin-bottom: 38rpx;
-						font-size: 28rpx;
+						margin-bottom: 22rpx;
+						font-size: 26rpx;
 						font-weight: bold;
+						color: #fff;
+						line-height: 1.42;
 					}
 
 					.bottom {
 						font-size: 24rpx;
+						color: #C0C3D2;
+						line-height: 1.375;
 					}
 				}
 
 				.right {
-					font-size: 36rpx;
-					color: #FD852B;
+					font-size: 30rpx;
+					color: #F1334A;
 					font-weight: bold;
+					line-height: 1.4;
 				}
+			}
+			
+			.tips {
+				margin-top: 60rpx;
+				color: #C0C3D2;
+				text-align: center;
+				font-size: 24rpx;
+				line-height: 1.375;
 			}
 		}
 	}

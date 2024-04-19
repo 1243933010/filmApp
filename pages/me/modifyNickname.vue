@@ -1,12 +1,15 @@
 <template>
 	<view class="profix-page-container modify-nickname-page">
-		<hx-navbar :config="config" />
-		<view class="modify-nickname-scroll page-scroll">
-			<view class="nickname-inp">
-				<input type="text" v-model="userInfo.nickname" :placeholder="$t('modifyNickname.placeholder')" />
+		<scroll-view scroll-y="true" class="page-scroll" @scroll="scrollHandle">
+			<hx-navbar :config="config" :class="{ 'has-bg': headerBg }" style="position: fixed; top: 0; left: 0; right: 0; z-index: 99" />
+			<view class="modify-nickname-scroll page-con">
+				<view class="nickname-inp">
+					<input type="text" v-model="userInfo.nickname" />
+				</view>
+				<!-- TODO -->
+				<button class="save-btn" @click="saveBtn">保存</button>
 			</view>
-			<button class="save-btn" @click="saveBtn">{{$t("modifyNickname.btnText")}}</button>
-		</view>
+		</scroll-view>
 	</view>
 </template>
 
@@ -14,6 +17,7 @@
 import hxNavbar from "@/components/hx-navbar.vue";
 import {$request} from '@/utils/request.js'
 export default {
+	name: "更换昵称",
 	components: {
 		hxNavbar,
 	},
@@ -21,18 +25,17 @@ export default {
 		return {
 			userInfo:{
 				nickname:''
-			}
+			},
+			headerBg: false,
 		};
 	},
 	computed: {
 		config() {
 			return {
-				title: this.$t("app.popup7"),
+				// TODO
+				title: "更换昵称",
 				color: "#ffffff",
-				// backgroundColor: [1, "#24bdab"],
-				// 背景图片（array则为滑动切换背景图，string为单一背景图）
-				// backgroundImg: ['/static/xj.jpg','/static/logo.jpg'],
-				backgroundImg: "../../static/img/header_tabber.png",
+				backgroundColor: "transparent",
 			};
 		},
 	},
@@ -40,6 +43,14 @@ export default {
 		this.getUserInfo();
 	},
 	methods:{
+		scrollHandle(event) {
+			const { scrollTop } = event.detail;
+			if (scrollTop >= 50) {
+				this.headerBg = true;
+			} else {
+				this.headerBg = false;
+			}
+		},
 		async getUserInfo(){
 			let res =  await $request('getUserInfo',{})
 			console.log(res)
@@ -68,32 +79,27 @@ export default {
 
 <style lang="less" scoped>
 @import "../../static/less/variable.less";
-page {
-	background-color: #f5f4f9;
-}
-
 .modify-nickname-page {
+	.page-scroll {
+		background: #1e1f28;
+	}
+	
 	.modify-nickname-scroll {
-		padding-top: 30rpx;
-		margin-left: -10rpx;
-		margin-right: -10rpx;
+		padding-top: 160rpx;
 
 		.nickname-inp {
 			border-radius: 10rpx;
-			padding: 36rpx;
-			background-color: #fff;
+			padding: 30rpx 36rpx;
+			background-color: #2F303B;
+			color: #C0C3D2;
+			font-size: 12rpx;
+			line-height: 1.375;
 		}
 
 		.save-btn {
-			margin: 440rpx auto 0;
-			border-radius: 10rpx;
-			padding: 34rpx;
-			// background-color: #383838;
-			background: linear-gradient(0deg, #0694B8 0%, #6BBDB4 100%);
-			width: calc(100vw - 236rpx);
-			color: #fff;
-			font-size: 24rpx;
-			line-height: 1;
+			margin-top: 406rpx;
+			.btn-box(50rpx, linear-gradient( 180deg, #F51B4C 0%, #ED4E49 100%));
+			max-width: 400rpx;
 		}
 	}
 }

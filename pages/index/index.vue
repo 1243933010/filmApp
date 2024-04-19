@@ -119,6 +119,7 @@ import { setTabbar } from "@/utils/utils.js";
 import likeIcon from "@/static/image/icon/like.png";
 import likeFillIcon from "@/static/image/icon/like-fill.png";
 export default {
+	name: "首页",
 	components: { customHeader },
 	data() {
 		return {
@@ -223,7 +224,7 @@ export default {
 					item.likeIcon = likeIcon;
 					return item;
 				});
-				console.log(this.nftList);
+				// console.log(this.nftList);
 			}
 		},
 		newLink(item) {
@@ -286,6 +287,7 @@ export default {
 			});
 		},
 		goPage(link) {
+			console.log(link);
 			if (link == "/pages/index/invitePage") {
 				// #ifdef APP
 				return false;

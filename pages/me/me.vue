@@ -94,6 +94,7 @@
 import customHeader from "@/components/customHeader/customHeader.vue";
 import { $request, url as requestUrl } from "@/utils/request.js";
 export default {
+	name: "我的 - 3",
 	data() {
 		return {
 			userInfo: {
@@ -128,35 +129,46 @@ export default {
 				num3: 1,
 			},
 			linkList: [
+				// TODO
 				{
 					url: "/pages/me/wallet",
-					title: this.$t("app.myWallet"),
-					src: "../../static/image/mine/lc.png",
+					title: "我的钱包",
+					src: "../../static/image/mine/1.png",
 				},
 				{
 					url: "/pages/me/deal",
-					title: this.$t("app.financial"),
-					src: "../../static/image/mine/cw.png",
+					title: "财务细节",
+					src: "../../static/image/mine/2.png",
 				},
 				{
 					url: "/pages/login/forgetPwd",
-					title: this.$t("app.securityCenter"),
-					src: "../../static/image/mine/ws.png",
+					title: "安全中心",
+					src: "../../static/image/mine/3.png",
 				},
 				{
 					url: "/pages/index/recargar",
-					title: this.$t("app.recharge"),
-					src: "../../static/image/mine/cz.png",
+					title: "我要充值",
+					src: "../../static/image/mine/4.png",
 				},
 				{
 					url: "/pages/index/withdraw",
-					title: this.$t("app.withdraw"),
-					src: "../../static/image/mine/tx.png",
+					title: "我要提现",
+					src: "../../static/image/mine/5.png",
+				},
+				{
+					url: "/pages/index/aboutUs",
+					title: "关于我们",
+					src: "../../static/image/mine/6.png",
+				},
+				{
+					url: "/pages/me/fwxy",
+					title: "服务协议",
+					src: "../../static/image/mine/7.png",
 				},
 				{
 					url: "",
 					title: this.$t("app.basicFunctions"),
-					src: "../../static/image/mine/jz.png",
+					src: "../../static/image/mine/8.png",
 				},
 			],
 			headerBg: false

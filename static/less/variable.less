@@ -14,12 +14,13 @@
 // 多行溢出隐藏
 .vertical(@n) {
 	display: -webkit-box;
-	-webkit-line-clamp: @n;
 	-webkit-box-orient: vertical;
+	-webkit-line-clamp: @n;
+	text-overflow: ellipsis;
 	overflow: hidden;
 }
 
-.glassBg(@blur: 30rpx, @opacity: 0.3, @bgColor: #2F303B) {
+.glassBg(@blur: 30px, @opacity: 0.3, @bgColor: #2F303B) {
 	position: relative;
 	overflow: hidden;
 	
@@ -30,9 +31,9 @@
 		top: 0;
 		right: 0;
 		bottom: 0;
-		filter: @blur;
-		opacity: @opacity;
-		background-color: @bgColor;
+		backdrop-filter: blur(@blur);
+		// opacity: @opacity;
+		background-color: fade(@bgColor, @opacity);
 	}
 }
 

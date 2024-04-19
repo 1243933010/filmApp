@@ -130,8 +130,13 @@ export default {
 * {
 	box-sizing: border-box;
 }
+uni-page {
+	overflow: hidden;
+}
+
 uni-page-body {
 	overflow: hidden;
+	height: 100vh;
 	
 	.has-tabbar {
 		height: calc(100vh - var(--tab-bar-height));

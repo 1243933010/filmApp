@@ -777,6 +777,13 @@
 		padding-top: 0;
 		overflow: hidden;
 		flex: 1;
+		
+		&.has-bg {
+			.hx-navbar__content {
+				background-color: rgba(0, 0, 0, .9) !important;
+			}
+		}
+		
 		&__stretch{
 			align-items: stretch;
 		}

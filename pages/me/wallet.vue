@@ -1,455 +1,225 @@
 <template>
 	<view class="profix-page-container wallet-page">
-		<hx-navbar :config="config" />
-		<view class="wallet-scroll page-scroll">
-			<view class="total-assets-box">
-				<view class="num">{{ balance }}</view>
-				<view class="text">{{ $t("wallet.total") }}</view>
-			</view>
-
-			<view class="ratio">
-				<view class="tips">
-					<view class="circle"></view>
-					{{ $t("wallet.tips") }}
+		<scroll-view :scroll-y="true" class="page-scroll" @scroll="scrollHandle">
+			<hx-navbar :config="config" :class="{ 'has-bg': headerBg }" style="position: fixed; top: 0; left: 0; right: 0; z-index: 99" />
+			<view class="wallet-scroll page-con">
+				<view class="total-assets-box">
+					<view class="num">{{ balance }}</view>
+					<!-- TODO -->
+					<view class="text">资产总额</view>
 				</view>
-				<view class="text">1USDT=$1</view>
-			</view>
-
-
-			<view class="forget-pwd-scroll page-scroll">
-				<view class="tab">
-					<view class="tab-item" :class="{ active: tabVal === index }" v-for="(item, index) in tabList"
-						:key="index" @click="changeTab(index)">
-						{{ item }}
-						<view class="line-list">
-							<view class="long line"></view>
-							<view class="sort line"></view>
-						</view>
-					</view>
+				
+				<view class="ratio">
+					<view class="tit">美元T-TEC 20</view>
+					<!-- TODO -->
+					<input class="input-box" type="text" placeholder="请输入USDT收货地址" />
+					<!-- TODO -->
+					<view class="tips">注：默认法定货币  1美元=1美元</view>
 				</view>
-				<view class="tab-content-list">
-					<view class="tab-content left" :class="{ active: tabVal === 1 }">
-						<!-- <view class="input-box"> -->
-							<view class="address-box">
-									<!-- <view class="tit">USDT-TRC20</view> -->
-									<view class="inp-box">
-										<view>{{$t("schema.name")}}:</view> <input :disabled="bankBool" v-model="bankObj.realname" type="text" :placeholder="$t('wallet.text1')" />
-									</view>
-									<view class="inp-box">
-										<view>{{$t("app.mobile")}}:</view>
-										<input  :disabled="bankBool" v-model="bankObj.mobile" type="text" :placeholder="$t('wallet.text2')" />
-									</view>
-									<view class="inp-box">
-										<view>{{$t("app.branch_bank_name")}}:</view>
-										<input  :disabled="bankBool" v-model="bankObj.branch_bank_name" type="text" :placeholder="$t('wallet.text3')" />
-									</view>
-									<view class="inp-box">
-										<view>{{$t("app.bank_account")}}:</view>
-										<input :disabled="bankBool" v-model="bankObj.bank_account" type="text" :placeholder="$t('wallet.text4')" />
-									</view>
-									<view class="inp-box">
-										<view>{{$t("app.id_number")}}:</view>
-										<input :disabled="bankBool" v-model="bankObj.id_number" type="text" :placeholder="$t('wallet.text5')" />
-									</view>
-								</view>
-								<view class="disabled-text"  v-if="bankBool" >
-									<!-- <view class="">{{$t("schema.name")}}:{{bankObj.realname}}</view> -->
-		<!-- 							<view class="">{{$t("app.mobile")}}:{{bankObj.mobile}}</view>
-									<view class="">{{$t("app.branch_bank_name")}}:{{bankObj.branch_bank_name}}</view>
-									<view class="">{{$t("app.bank_account")}}:{{bankObj.bank_account}}</view>
-									<view class="">{{$t("app.id_number")}}:{{bankObj.id_number}}</view> -->
-								</view>
-								<button v-if="!bankBool" class="sub-btn" @click="bindBank">{{ $t("wallet.text6") }}</button>
-							<!-- </view> -->
 
-						
-					</view>
-					<view class="tab-content right" :class="{ active: tabVal === 0 }">
-						<view class="address-box">
-								<view class="tit">USDT-TRC20</view>
-								<view class="inp-box">
-									<input :disabled="usdtBool" v-model="account" type="text" :placeholder="$t('wallet.placeholder')" />
-								</view>
-							</view>
-							
-							<button v-if="!usdtBool" class="sub-btn" @click="subBtn">{{ $t("wallet.btnText") }}</button>
-
-						<!-- <view class="save-btn" @click="saveHandle('')">{{$t('app.saveChanges')}}</view> -->
-					</view>
-				</view>
+				<view class="sub-btn" @click="subBtn">捆绑钱包</view>
 			</view>
-
-
-
-			
-		</view>
+		</scroll-view>
 	</view>
 </template>
 
 <script>
-	
-	import hxNavbar from "@/components/hx-navbar.vue";
-	import {
-		$request
-	} from "../../utils/request";
+import hxNavbar from "@/components/hx-navbar.vue";
+import { $request } from "../../utils/request";
 
-	export default {
-		components: {
-			hxNavbar
-		},
-		data() {
+export default {
+	name: "我的钱包",
+	components: {
+		hxNavbar,
+	},
+	data() {
+		return {
+			balance: 0,
+			account: "",
+			// account_list: {},
+			///
+			tabVal: 0,
+			loginObj: {
+				old_password: "",
+				password: "",
+				password_confirmation: "",
+			},
+			bankObj: {
+				realname: "",
+				mobile: "",
+				branch_bank_name: "",
+				bank_account: "",
+				id_number: "",
+			},
+			userInfo: {},
+			usdtBool: false,
+			bankBool: false,
+			headerBg: false,
+		};
+	},
+	computed: {
+		config() {
 			return {
-				balance: 0,
-				account: '',
-				// account_list: {},
-				///
-				tabVal: 0,
-				loginObj:{
-					old_password:"",
-					password:'',
-					password_confirmation:''
-				},
-				bankObj:{
-					realname:'',
-					mobile:'',
-					branch_bank_name:'',
-					bank_account:'',
-					id_number:''
-				},
-				userInfo:{},
-				usdtBool:false,
-				bankBool:false
+				// TODO
+				title: "我的钱包",
+				color: "#ffffff",
+				backgroundColor: "transparent",
 			};
 		},
-		computed: {
-			config() {
-				return {
-					title: this.$t("wallet.pageTit"),
-					color: "#ffffff",
-					// backgroundColor: [1, "#24bdab"],
-					// 背景图片（array则为滑动切换背景图，string为单一背景图）
-					// backgroundImg: ['/static/xj.jpg','/static/logo.jpg'],
-					backgroundImg: "../../static/img/header_tabber.png",
-				};
-			},
-			tabList(){
-				return [ this.$t('app.bankCard'),'USDT',]
-				 // return [ 'USDT']
-				 // this.$t('app.bankCard'),
+		tabList() {
+			return [this.$t("app.bankCard"), "USDT"];
+			// return [ 'USDT']
+			// this.$t('app.bankCard'),
+		},
+	},
+	methods: {
+		scrollHandle(event) {
+			const { scrollTop } = event.detail;
+			if (scrollTop >= 50) {
+				this.headerBg = true;
+			} else {
+				this.headerBg = false;
 			}
 		},
-		methods: {
-			async bindBank(){
-				let res = await $request('bindBank',{...this.bankObj});
-				console.log(res)
-				if(res.data.code===0){
-					this.walletInfo();
-				}
-				uni.showToast({
-					icon:'none',
-					title:res.data.msg
-				})
-			},
-			changeTab(index) {
-				this.tabVal = index;
-			},
-			async walletInfo() {
-				const res = await $request("walletInfo");
-				const {
-					code,
-					data,
-					msg
-				} = res.data;
-
-				if (code !== 0) {
-					uni.showToast({
-						title: "钱包信息获取失败",
-						icon: "none",
-					});
-
-					return;
-				}
-
-				const {
-					balance,
-					account_list
-				} = data;
-				this.balance = balance * 1;
-				// this.account_list = account_list;
-				this.bankObj = account_list.bank;
-				console.log(account_list.bank.mobile)
-				if(account_list.bank.mobile){
-					this.bankBool = true;
-				}
-				if(account_list.usdt.bank_account){
-					this.usdtBool = true;
-					this.account = account_list.usdt.bank_account;
-				}
-			},
-			async subBtn() {
-				let res = await $request('bindAccount', {
-					account: this.account
-				})
-				uni.showToast({
-					icon: 'none',
-					title: res.data.msg
-				})
-				if (res.data.code === 0) {
-					this.walletInfo()
-					// setTimeout(() => {
-					// 	uni.navigateBack({
-					// 		delta: 1
-					// 	})
-					// }, 1500)
-				}
-			},
+		async bindBank() {
+			let res = await $request("bindBank", { ...this.bankObj });
+			console.log(res);
+			if (res.data.code === 0) {
+				this.walletInfo();
+			}
+			uni.showToast({
+				icon: "none",
+				title: res.data.msg,
+			});
 		},
-		mounted() {
-			this.walletInfo();
+		changeTab(index) {
+			this.tabVal = index;
 		},
-	};
+		async walletInfo() {
+			const res = await $request("walletInfo");
+			const { code, data, msg } = res.data;
+
+			if (code !== 0) {
+				uni.showToast({
+					title: "钱包信息获取失败",
+					icon: "none",
+				});
+
+				return;
+			}
+
+			const { balance, account_list } = data;
+			this.balance = balance * 1;
+			// this.account_list = account_list;
+			this.bankObj = account_list.bank;
+			console.log(account_list.bank.mobile);
+			if (account_list.bank.mobile) {
+				this.bankBool = true;
+			}
+			if (account_list.usdt.bank_account) {
+				this.usdtBool = true;
+				this.account = account_list.usdt.bank_account;
+			}
+		},
+		async subBtn() {
+			let res = await $request("bindAccount", {
+				account: this.account,
+			});
+			uni.showToast({
+				icon: "none",
+				title: res.data.msg,
+			});
+			if (res.data.code === 0) {
+				this.walletInfo();
+				// setTimeout(() => {
+				// 	uni.navigateBack({
+				// 		delta: 1
+				// 	})
+				// }, 1500)
+			}
+		},
+	},
+	mounted() {
+		this.walletInfo();
+	},
+};
 </script>
 
 <style lang="less" scoped>
-	@import "../../static/less/variable.less";
+@import "../../static/less/variable.less";
+
+.wallet-page {
+	.page-scroll {
+		background: #1e1f28;
+	}
 	
-	.disabled-text{
-		padding: 20px 0;
-		view{
-			margin-bottom: 20px;
-			font-size: 24rpx;
-		}
-	}
+	.wallet-scroll {
+		padding-top: 120rpx;
+		.df(center, flex-start, column);
+		
+		.total-assets-box {
+			margin: 20rpx 20rpx 0;
+			padding: 54rpx 20rpx;
+			background: url("../../static/image/mine/walletBg.png") no-repeat top left / 100% 100%;
+			width: calc(100% - 40rpx);
 
-	page {
-		background-color: #f5f4f9;
-	}
+			.df(center, center);
+			flex-direction: column;
 
-	.wallet-page {
-		.wallet-scroll {
-			.total-assets-box {
-				margin-top: 20rpx;
-				padding: 56rpx 20rpx 24rpx;
-				background: url("../../static/img/bg/wallet.png") no-repeat top left / 100% 100%;
-
-				.df(center, center);
-				flex-direction: column;
-
-				.num {
-					margin-bottom: 54rpx;
-					font-size: 48rpx;
-					color: #fffeff;
-					font-weight: bold;
-				}
-
-				.text {
-					color: #fff;
-				}
+			.num {
+				margin-bottom: 14rpx;
+				font-size: 50rpx;
+				color: #fff;
+				font-weight: bold;
+				line-height: 1.4;
 			}
 
-			.ratio {
-				margin-top: 52rpx;
-
-				.tips {
-					margin-bottom: 22rpx;
-					.df(center, flex-start);
-					font-size: 24rpx;
-
-					.circle {
-						margin-right: 12rpx;
-						border-radius: 50%;
-						// background: linear-gradient(0deg, #fd7e1f 0%, #fd862c 100%);
-						background: linear-gradient(0deg, #0694B8 0%, #6BBDB4 100%);
-						width: 20rpx;
-						height: 20rpx;
-					}
-				}
-
-				.text {
-					margin-bottom: 56rpx;
-					margin-left: 32rpx;
-				}
-			}
-
-			.address-box {
-				border-radius: 20rpx;
-				background-color: #fff;
-
-				.tit {
-					border-bottom: 1px solid #f5f4f9;
-					padding: 30rpx 35rpx;
-					color: #fd7e1f;
-					font-weight: bold;
-				}
-
-				.inp-box {
-					padding: 50rpx 35rpx;
-					view{
-						margin-bottom: 10px;
-					}
-					input {
-						line-height: 1;
-						font-size: 26rpx;
-					}
-				}
-			}
-
-			.sub-btn {
-				margin: 200rpx auto 0;
-				border-radius: 10rpx;
-				padding: 34rpx;
-				background-color: #383838;
-				// background: linear-gradient(0deg, #0694B8 0%, #6BBDB4 100%);
-				width: calc(100vw - 236rpx);
+			.text {
 				color: #fff;
 				font-size: 24rpx;
-				line-height: 1;
 			}
+		}
+
+		.ratio {
+			margin-top: -20rpx;
+			margin-bottom: 88rpx;
+			border-radius: 20rpx;
+			padding: 40rpx 44rpx;
+			background-color: #2F303B;
+			width: 100%;
+			
+			.tit {
+				margin-bottom: 25rpx;
+				color: #fff;
+				font-size: 24rpx;
+				line-height: 1.375;
+			}
+			
+			.input-box {
+				margin-bottom: 32rpx;
+				border-radius: 10rpx;
+				padding: 30rpx 28rpx;
+				background-color: #1E1F28;
+				display: block;
+				color: #fff;
+				font-size: 24rpx;
+				line-height: 1.375;
+				height: auto;
+			}
+			
+			.tips {
+				color: #C0C3D2;
+				font-size: 24rpx;
+				line-height: 1.375;
+			}
+		}
+		
+		.sub-btn {
+			.btn-box(50rpx, linear-gradient( 180deg, #F51B4C 0%, #ED4E49 100%));
+			max-width: 400rpx;
+			width: 100%;
+			text-align: center;
 		}
 	}
-	
-	
-		.forget-pwd-scroll {
-			.tab {
-				.df(center, space-around);
-	
-				.tab-item {
-					padding: 40rpx 0 30rpx;
-					color: #383838;
-					font-weight: bold;
-	
-					position: relative;
-	
-					.line-list {
-						width: 0;
-						transition: width 0.35s;
-	
-						position: absolute;
-						bottom: 0;
-						left: 0;
-						height: 10rpx;
-						z-index: 1;
-	
-						.df(center, space-between);
-	
-						.line {
-							border-radius: 5rpx;
-							// background-color: #fd7e1f;
-							background: linear-gradient(0deg, #0694B8 0%, #6BBDB4 100%);
-							height: 100%;
-	
-							&.long {
-								width: 66%;
-							}
-	
-							&.sort {
-								width: 16%;
-							}
-						}
-					}
-	
-					&.active {
-						color: #fd7e1f;
-	
-						.line-list {
-							width: 100%;
-						}
-					}
-				}
-			}
-	
-			.tab-content-list {
-				display: flex;
-				position: relative;
-	
-				.tab-content {
-					padding-top: 55rpx;
-					transition: 0.35s;
-					position: absolute;
-					top: 0;
-					overflow: hidden;
-	
-					&.active {
-						flex-grow: 1;
-						z-index: 1;
-	
-						&.left {
-							right: 100%;
-						}
-	
-						&.right {
-							left: 100%;
-						}
-					}
-	
-					&.left {
-						left: 0;
-						right: 0;
-					}
-	
-					&.right {
-						right: 0;
-						left: 0;
-					}
-	
-					.input-box {
-						border-radius: 20rpx;
-						background-color: #fff;
-						width: calc(100vw - 60rpx);
-	
-						.input-label {
-							border-bottom: 1px solid #f5f4f9;
-							padding: 30rpx 35rpx;
-							.df(center, space-between);
-	
-							.text {
-								color: #fd7e1f;
-							}
-	
-							.eye-icon {
-								width: 29rpx;
-								height: 22rpx;
-								background: url("../../static/img/icon/eye.png") no-repeat center center / 100%;
-							}
-						}
-	
-						.inp-box {
-							padding: 50rpx 35rpx;
-	
-							input {
-								line-height: 1;
-								font-size: 26rpx;
-							}
-						}
-					}
-	
-					.save-btn {
-						margin: 35vh auto 0;
-						border-radius: 10rpx;
-						padding: 34rpx;
-						// background-color: #383838;
-						background: linear-gradient(60deg, #0694B8 0%, #6BBDB4 100%);
-						width: calc(100vw - 236rpx);
-						color: #fff;
-						font-size: 24rpx;
-						line-height: 1;
-						text-align: center;
-					}
-				}
-			}
-		}
-	
-		.save-success {
-			.pic {
-				width: 166rpx;
-			}
-	
-			.text {
-				margin-top: 20rpx;
-				color: #fff;
-				font-size: 30rpx;
-				text-align: center;
-			}
-		}
-	
+}
 </style>

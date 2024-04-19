@@ -1,14 +1,16 @@
 <template>
 	<view class="profix-page-container about-us-page">
-		<hx-navbar :config="config" />
-		<view class="about-us-scroll page-scroll">
-			<!-- <view class="banner pic">
-				<image src="../../static/img/banner/about_us.png" mode="widthFix" class="img"></image>
-			</view> -->
-			<view class="about-us-text">
-				<rich-text :nodes="info.content"></rich-text>
+		<scroll-view :scroll-y="true" class="page-scroll" @scroll="scrollHandle">
+			<hx-navbar :config="config" :class="{ 'has-bg': headerBg }" style="position: fixed; top: 0; left: 0; right: 0; z-index: 99" />
+			<view class="about-us-scroll page-con">
+				<!-- <view class="banner pic">
+					<image src="../../static/img/banner/about_us.png" mode="widthFix" class="img"></image>
+				</view> -->
+				<view class="about-us-text">
+					<rich-text :nodes="info.content"></rich-text>
+				</view>
 			</view>
-		</view>
+		</scroll-view>
 	</view>
 </template>
 
@@ -21,55 +23,67 @@ export default {
 	},
 	data() {
 		return {
-			info:{}
+			info: {},
+			headerBg: false,
 		};
 	},
 	computed: {
 		config() {
 			return {
-				title: this.$t("aboutUs.pageTit"),
+				// TODO
+				title: "关于我们",
 				color: "#ffffff",
-				// backgroundColor: [1, "#24bdab"],
-				// 背景图片（array则为滑动切换背景图，string为单一背景图）
-				// backgroundImg: ['/static/xj.jpg','/static/logo.jpg'],
-				backgroundImg: "../../static/img/header_tabber.png",
+				backgroundColor: "transparent",
 			};
-		}
+		},
 	},
-	onLoad(e){
+	onLoad(e) {
 		// this.getInfo(e.id)
-		this.getInfo()
+		this.getInfo();
 	},
-	methods:{
-		getInfo(id){
-			
-			this.info = uni.getStorageSync('about');
-			console.log(this.info)
-		}
-	}
+	methods: {
+		scrollHandle(event) {
+			const { scrollTop } = event.detail;
+			if (scrollTop >= 50) {
+				this.headerBg = true;
+			} else {
+				this.headerBg = false;
+			}
+		},
+		getInfo(id) {
+			this.info = uni.getStorageSync("about");
+			console.log(this.info);
+		},
+	},
 };
 </script>
 
 <style lang="less">
 .about-us-page {
-	img{
-		width: 100%;
+	.page-scroll {
+		background: #1e1f28;
 	}
+	
 	.about-us-scroll {
-		padding-top: 20rpx;
-		
+		padding-top: 120rpx;
+
 		.banner {
 			width: 100%;
 		}
-		
+
 		.about-us-text {
 			width: 100%;
-			box-sizing: border-box;
+
+			img {
+				width: 100%;
+			}
 			
-			margin-top: 30rpx;
-			color: #666666;
-			font-size: 28rpx;
-			line-height: 1.21;
+			p {
+				margin-bottom: 30rpx;
+				font-size: 24rpx;
+				line-height: 1.375;
+				color: #C0C3D2;
+			}
 		}
 	}
 }

@@ -1,42 +1,46 @@
 <template>
 	<view class="profix-page-container storage-level-page">
-		<hx-navbar :config="config" />
-		<view class="storage-level-scroll page-scroll">
-			<view class="storage-list">
-				<view class="storage-item LV0" v-for="(item,index) in level_list" :key="item.id" @click.stop="goPage(item)">
-					 <!-- v-if="item.is_returned==1" -->
-					<view class="refund" @click.stop="refund"  v-if="item.is_returned==1">
-						<span>{{ $t("app.popup8") }}</span>
-					</view>
-					<view class="pic bg">
-						<image :src="lvImgList[index]" mode="widthFix" class="img"></image>
-					</view>
-					<view class="level-info">
-						<view class="info-row">
-							<view class="row-item">
-								<text>{{ item.price }} {{ $t("storageLevel.dollar") }}</text>
-								<text>{{ $t("storageLevel.row1") }}</text>
-							</view>
-							<view class="row-item">
-								<text>{{ item.queue_num }}</text>
-								<text>{{ $t("storageLevel.row2") }}</text>
-							</view>
-							<view class="row-item">
-								<text>{{ item.monthly_income }} {{ $t("storageLevel.dollar") }}</text>
-								<text>{{ $t("storageLevel.row3") }}</text>
-							</view>
+		<scroll-view scroll-y="true" class="page-scroll" @scroll="scrollHandle">
+			<hx-navbar :config="config" :class="{'has-bg': headerBg}" style="position: fixed; top: 0; left: 0;
+			right: 0; z-index: 99;" />
+			
+			<view class="storage-level-scroll page-con">
+				<view class="storage-list">
+					<view class="storage-item LV0" :class="{black: index === 3}" v-for="(item,index) in level_list" :key="item.id" @click.stop="goPage(item)">
+						<view class="pic bg">
+							<image :src="lvImgList[index]" mode="widthFix" class="img"></image>
 						</view>
-						<view class="level-income">
-							<view class="level">{{ item.title }}</view>
-							<view class="income">
-								<text>{{ item.price }} {{ $t("storageLevel.dollar") }}</text>
-								<text>{{ $t("storageLevel.dailyRevenue") }}{{item.daily_income}}</text>
+						<view class="level-info">
+							<view class="info-row">
+								<view class="row-item">
+									<!-- TODO -->
+									<text>{{ item.price }}美元</text>
+									<text>特许经营保证金</text>
+								</view>
+								<view class="row-item">
+									<!-- TODO -->
+									<text>{{ item.queue_num }}</text>
+									<text>每日购买限额</text>
+								</view>
+								<view class="row-item">
+									<!-- TODO -->
+									<text>{{ item.monthly_income }}美元</text>
+									<text>月收入</text>
+								</view>
+							</view>
+							<view class="level-income">
+								<view class="level">{{ item.title }}</view>
+								<view class="income">
+									<!-- TODO -->
+									<text>{{ item.price }}美元</text>
+									<text>每日收入{{item.daily_income}}</text>
+								</view>
 							</view>
 						</view>
 					</view>
 				</view>
 			</view>
-		</view>
+		</scroll-view>
 	</view>
 </template>
 
@@ -45,32 +49,31 @@ import hxNavbar from "@/components/hx-navbar.vue";
 import { $request } from "../../utils/request";
 
 export default {
+	name: "会员级别",
 	components: {
 		hxNavbar,
 	},
 	data() {
 		return {
-			lvImgList:['../../static/img/storageLevel/-h-1.png','../../static/img/storageLevel/-h-2.png','../../static/img/storageLevel/-h-3.png','../../static/img/storageLevel/-h-4.png','../../static/img/storageLevel/-h-5.png','../../static/img/storageLevel/-h-6.png','../../static/img/storageLevel/-h-7.png','../../static/img/storageLevel/-h-8.png','../../static/img/storageLevel/-h-9.png','../../static/img/storageLevel/-h-10.png','../../static/img/storageLevel/-h-11.png',],
-			// lvImgList: {
-			// 	LV0: "../../static/img/storageLevel/LV0.png",
-			// 	LV: "../../static/img/storageLevel/LV.png",
-			// 	LV1: "../../static/img/storageLevel/LV1.png",
-			// 	LV2: "../../static/img/storageLevel/LV2.png",
-			// 	LV3: "../../static/img/storageLevel/LV3.png",
-			// },
+			lvImgList:[
+				'../../static/image/storageLevel/1.png',
+				'../../static/image/storageLevel/2.png',
+				'../../static/image/storageLevel/3.png',
+				'../../static/image/storageLevel/4.png',
+				'../../static/image/storageLevel/5.png',
+			],
 			level_list: [],
 			user_info: {},
+			headerBg: false,
 		};
 	},
 	computed: {
 		config() {
 			return {
-				title: this.$t("storageLevel.pageTit"),
+				// TODO
+				title: "会员等级",
 				color: "#ffffff",
-				// backgroundColor: [1, "#24bdab"],
-				// 背景图片（array则为滑动切换背景图，string为单一背景图）
-				// backgroundImg: ['/static/xj.jpg','/static/logo.jpg'],
-				backgroundImg: "../../static/img/header_tabber.png",
+				backgroundColor: "transparent"
 			};
 		},
 	},
@@ -78,6 +81,14 @@ export default {
 		this.getVip();
 	},
 	methods: {
+		scrollHandle(event) {
+			const { scrollTop } = event.detail;
+			if (scrollTop >= 50) {
+				this.headerBg = true;
+			} else {
+				this.headerBg = false;
+			}
+		},
 		async getVip(){
 			const res = await $request("vipList");
 			const { data, code, msg } = res.data;
@@ -155,62 +166,33 @@ export default {
 
 <style lang="less" scoped>
 @import "../../static/less/variable.less";
-page {
-	background-color: #f5f4f9;
-}
 
 .storage-level-page {
+	.page-scroll {
+		background: #1E1F28;
+	}
+	
 	.storage-level-scroll {
-		padding-top: 28rpx;
+		padding-top: 120rpx;
 
 		.storage-list {
-			margin-right: -10rpx;
-			margin-left: -10rpx;
-			padding-bottom: 1rpx;
+			.df(stretch, flex-start, column);
 
 			.storage-item {
-				margin-bottom: 20rpx;
+				margin-bottom: 24rpx;
 				border-radius: 20rpx;
-				border: 1px solid #fd7e1f;
-				padding: 10rpx;
-				background-color: #fff;
 				position: relative;
-
-				&.LV1 {
+				
+				&.black {
 					.level-info {
-						color: #3f7fe1;
-					}
-				}
-
-				&.LV2 {
-					.level-info {
-						color: #746fd8;
-					}
-				}
-
-				&.LV3 {
-					.level-info {
-						color: #d4fdff;
+						color: #1E1F28;
 					}
 				}
 
 				.bg {
 					width: 100%;
 				}
-				.refund{
-					position: absolute;
-					right: 50rpx;
-					top: 50rpx;
-					z-index: 10;
-					border-radius: 10rpx;
-					padding: 20rpx 30rpx;
-					font-size: 24rpx;
-					// width: 150rpx;
-					color: #383838;
-					background: #F0E8E8;
-					// background: linear-gradient(0deg, #0694B8 0%, #6BBDB4 100%);
-					text-align: center;
-				}
+				
 				.level-info {
 					position: absolute;
 					left: 0;
@@ -218,28 +200,27 @@ page {
 					bottom: 0;
 					top: 0;
 
-					padding: 35rpx 40rpx;
-					color: #a77933;
+					padding: 50rpx;
+					color: #FFFFFF;
 
-					display: flex;
-					flex-direction: column-reverse;
+					.df(stretch, space-between, column-reverse);
 
 					.level-income {
 						font-weight: bold;
 
 						.level {
-							margin-bottom: 26rpx;
-							font-size: 72rpx;
-							line-height: 1;
+							margin-bottom: 8rpx;
+							font-size: 48rpx;
+							line-height: 1.4;
 						}
 
 						.income {
 							.df(center, flex-start);
 
 							text {
-								margin-left: 45rpx;
-								font-size: 30rpx;
-								line-height: 1;
+								margin-left: 36rpx;
+								font-size: 24rpx;
+								line-height: 1.37;
 
 								&:first-child {
 									margin-left: 0;
@@ -249,7 +230,6 @@ page {
 					}
 
 					.info-row {
-						margin-top: 58rpx;
 						.df(center, space-between);
 
 						.row-item {
@@ -258,8 +238,9 @@ page {
 							width: calc(33.33% - 8rpx);
 
 							text {
-								margin-bottom: 14rpx;
+								margin-bottom: 10rpx;
 								display: block;
+								line-height: 1.37;
 
 								&:last-child {
 									margin-bottom: 0;

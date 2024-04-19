@@ -1,91 +1,101 @@
 <template>
-  <view class="profix-page-container product-detail-page">
-    <hx-navbar :config="config" />
-    <view class="product-detail-scroll page-scroll">
-      <view class="product-img pic">
-        <image :src="info.nft_img" mode="aspectFit" class="img"></image>
-      </view>
-      <view class="product-info">
-        <view class="product-tit">{{info.nft_name }}</view>
-        <view class="info-list">
-			<view class="list-item">
-			  <view class="left">{{ info.nft_desc }}</view>
+	<view class="profix-page-container product-detail-page">
+		<scroll-view scroll-y="true" class="page-scroll" @scroll="scrollHandle">
+			<hx-navbar :config="config" :class="{ 'has-bg': headerBg }" style="position: fixed; top: 0; left: 0; right: 0; z-index: 99" />
+
+			<view class="product-detail-scroll page-con">
+				<div class="max-con">
+					<view class="product-img pic">
+						<image :src="info.nft_img" mode="widthFix" class="img"></image>
+					</view>
+					<view class="product-tit">{{ info.nft_name }}</view>
+					<!-- TODO -->
+					<view class="product-time">${{ info.money }} - 时间占位符</view>
+					<view class="product-desc" v-if="info.nft_desc">{{ info.nft_desc }}</view>
+					<!-- TODO -->
+					<view class="go-btn" @click="goPage">进入</view>
+				</div>
 			</view>
-          <view class="list-item">
-            <view class="left">{{ $t("productDetail.text1") }}</view>
-            <view class="right">{{info.money}} $</view>
-          </view>
-          <view class="list-item">
-            <view class="left">{{ $t("productDetail.text2") }}</view>
-            <view class="right">{{info.rebate_money}} $</view>
-          </view>
-          <view class="list-item">
-            <view class="left">{{ $t("productDetail.text3") }}</view>
-            <view class="right black">{{info.order_number}}</view>
-          </view>
-        </view>
-      </view>
-      <button class="sub-btn" @click="subBtn">{{ $t("productDetail.btnText") }}</button>
-    </view>
-  </view>
+		</scroll-view>
+	</view>
 </template>
 
 <script>
 import hxNavbar from "@/components/hx-navbar.vue";
-import { $request,url as requestUrl } from "@/utils/request";
+import { $request, url as requestUrl } from "@/utils/request";
 export default {
-  components: {
-    hxNavbar,
-  },
-  data() {
-    return {
-      productId: 1,
-	  info:{}
-    };
-  },
-  onLoad: function ({ id }) {
-    this.productId = id;
-	this.getDetail(id);
-  },
-  computed: {
-    config() {
-      return {
-        title: this.$t("productDetail.pageTit"),
-        color: "#ffffff",
-        // backgroundColor: [1, "#24bdab"],
-        // 背景图片（array则为滑动切换背景图，string为单一背景图）
-        // backgroundImg: ['/static/xj.jpg','/static/logo.jpg'],
-        backgroundImg: "../../static/img/header_tabber.png",
-      };
-    },
-  },
-  methods:{
-	  async getDetail(id){
-		  let res = await $request('nftDeail',{nft_id:id});
-		  console.log(res)
-		  if(res.data.code===0){
-			  this.info = res.data.data;
-			  return
-		  }
-		  uni.showToast({
-		  	icon:'none',
-			title:res.data.msg
-		  })
-	  },
-	  async subBtn(){
-		  let res = await $request('ordersRequest',{nft_id: this.productId,order_number:this.info.order_number});
-		  // console.log(res);
-		  uni.showToast({
-		  	icon:'none',
-			title:res.data.msg
-		  })
-		  if(res.data.code===0){
-			  setTimeout(()=>{
-				  uni.navigateBack({delta:1})
-			  },1500)
-		  }
-	  },
-  }
+	name: "选择票数",
+	components: {
+		hxNavbar,
+	},
+	data() {
+		return {
+			productId: 1,
+			info: {},
+			headerBg: false,
+		};
+	},
+	onLoad: function ({ id }) {
+		this.productId = id;
+		this.getDetail(id);
+	},
+	computed: {
+		config() {
+			return {
+				// TODO
+				title: "Pacific Rim",
+				color: "#ffffff",
+				backgroundColor: "transparent",
+			};
+		},
+	},
+	methods: {
+		goPage() {
+			if(!this.info.id) {
+				uni.showToast({
+					icon: "none",
+					title: "Not find ID",
+				});
+				return;
+			}
+			uni.navigateTo({
+				url: `/pages/index/selectSeat?id=${this.info.id}`,
+			});
+		},
+		scrollHandle(event) {
+			const { scrollTop } = event.detail;
+			if (scrollTop >= 50) {
+				this.headerBg = true;
+			} else {
+				this.headerBg = false;
+			}
+		},
+		async getDetail(id) {
+			let res = await $request("nftDeail", { nft_id: id });
+			// console.log(res);
+			if (res.data.code === 0) {
+				this.info = res.data.data;
+				return;
+			}
+			uni.showToast({
+				icon: "none",
+				title: res.data.msg,
+			});
+		},
+		async subBtn() {
+			let res = await $request("ordersRequest", { nft_id: this.productId, order_number: this.info.order_number });
+			// console.log(res);
+			uni.showToast({
+				icon: "none",
+				title: res.data.msg,
+			});
+			if (res.data.code === 0) {
+				setTimeout(() => {
+					uni.navigateBack({ delta: 1 });
+				}, 1500);
+			}
+		},
+	},
 };
 </script>
 
@@ -93,60 +103,58 @@ export default {
 @import "../../static/less/variable.less";
 
 .product-detail-page {
-  .product-detail-scroll {
-    padding: 0;
-	display: flex;
-	flex-direction: column;
+	.page-scroll {
+		background: #1e1f28;
+	}
 
-    .product-img {
-      width: 100%;
-	  height: 400rpx;
-	  image{
-		  width: 100%;
-		  height: 100% !important;
-	  }
-    }
+	.product-detail-scroll {
+		padding-top: 340rpx;
 
-    .product-info {
-      padding: 30rpx;
+		.max-con {
+			margin-left: auto;
+			margin-right: auto;
+			max-width: 80vw;
 
-      .product-tit {
-        margin-bottom: 50rpx;
-        font-size: 36rpx;
-        color: #383838;
-        font-weight: bold;
-      }
+			.df(center, flex-start, column);
 
-      .info-list {
-        .list-item {
-          margin-bottom: 34rpx;
-          font-size: 28rpx;
-          .df(center, space-between);
+			.product-img {
+				border-radius: 20rpx;
+				width: 220rpx;
+			}
 
-          .left {
-            color: #383838;
-          }
+			.product-tit {
+				margin-top: 30rpx;
+				font-size: 30rpx;
+				color: #fff;
+				line-height: 1.4;
+				color: #fff;
+				text-align: center;
+			}
 
-          .right {
-            color: #ff690c;
+			.product-time {
+				margin-top: 14rpx;
+				font-size: 30rpx;
+				color: #d32b56;
+				line-height: 1.4;
+				text-align: center;
+			}
 
-            &.black {
-              color: #383838;
-            }
-          }
-        }
-      }
-    }
-
-    .sub-btn {
-      margin: 100rpx auto 20rpx;
-      padding: 10rpx;
-      // background-color: #383838;
-	  background: linear-gradient(0deg, #0694B8 0%, #62BAB4 100%);
-      color: #fff;
-      font-size: @descSize;
-      width: calc(100vw - 236rpx);
-    }
-  }
+			.product-desc {
+				margin-top: 20rpx;
+				font-size: 24rpx;
+				color: #c0c3d2;
+				line-height: 1.375;
+				text-align: center;
+			}
+			
+			.go-btn {
+				.btn-box(50rpx, linear-gradient( 180deg, #F51B4C 0%, #ED4E49 100%));
+				
+				margin-top: 80rpx;
+				min-width: 400rpx;
+				text-align: center;
+			}
+		}
+	}
 }
 </style>
