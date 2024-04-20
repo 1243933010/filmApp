@@ -77,8 +77,8 @@ export default {
 			isMember: true,
 			formData: {
 				login_type: "0",
-				mobile: undefined,
-				password: "",
+				mobile: "18512345678",
+				password: "123456",
 				country_code: "+86", // 手机前缀
 			},
 			headerBg: false
@@ -89,8 +89,8 @@ export default {
 		this.iStatusBarHeight = uni.getSystemInfoSync().statusBarHeight;
 
 		// 获取缓存里面的手机号和密码
-		this.formData.mobile = uni.getStorageSync("mobile");
-		this.formData.password = uni.getStorageSync("password");
+		// this.formData.mobile = uni.getStorageSync("mobile");
+		// this.formData.password = uni.getStorageSync("password");
 
 		// 在页面加载时监听返回事件
 		uni.$on("getPrefix", event => {
