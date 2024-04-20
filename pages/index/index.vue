@@ -74,15 +74,15 @@
 					</view>
 				</view>
 				
-				<view class="film-h-list">
+			<!-- 	<view class="film-h-list">
 					<view class="tit">
-						<!-- TODO -->
+						
 						<text class="left">More movies and television</text>
 						<text class="right">more</text>
 					</view>
 					<scroll-view scroll-x="true" class="film-scroll">
 						<view class="product-list">
-							<!-- nftList 暂时先用的这个数组, 后面可以声明一个新的数组, 记得处理likeIcon -->
+							
 							<view class="product-item" v-for="(item, index) in nftList" :key="index">
 								<view class="product-img pic">
 									<image src="@/static/image/goodsImg1.png" mode="widthFix" class="img" @click="goProductDetail(item)"></image>
@@ -97,13 +97,13 @@
 								<view class="product-info">
 									<view class="product-tit">{{ item.nft_name }}</view>
 									<view class="product-time">$ {{ item.money * 1 }}</view>
-									<!-- TODO -->
+									
 									<view class="product-desc">建业时代影城</view>
 								</view>
 							</view>
 						</view>
 					</scroll-view>
-				</view>
+				</view> -->
 			</view>
 		</scroll-view>
 		<uni-popup ref="popup" type="center" background-color="transparent">
