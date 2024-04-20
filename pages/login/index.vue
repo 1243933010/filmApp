@@ -79,7 +79,7 @@ export default {
 				login_type: "0",
 				mobile: undefined,
 				password: "",
-				country_code: "+975", // 手机前缀
+				country_code: "+86", // 手机前缀
 			},
 			headerBg: false
 		};
@@ -222,6 +222,7 @@ export default {
 					.prefix-con {
 						margin-right: 20rpx;
 						position: relative;
+						z-index: 2;
 
 						.number-prefix {
 							margin-right: 30rpx;
