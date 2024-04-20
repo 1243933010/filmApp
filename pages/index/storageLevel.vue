@@ -6,7 +6,7 @@
 			
 			<view class="storage-level-scroll page-con">
 				<view class="storage-list">
-					<view class="storage-item LV0" :class="{black: index === 3}" v-for="(item,index) in level_list" :key="item.id" @click.stop="goPage(item)">
+					<view class="storage-item LV0 black" v-for="(item,index) in level_list" :key="item.id" @click.stop="goPage(item)">
 						<view class="pic bg">
 							<image :src="lvImgList[index]" mode="widthFix" class="img"></image>
 						</view>
@@ -55,13 +55,7 @@ export default {
 	},
 	data() {
 		return {
-			lvImgList:[
-				'../../static/image/storageLevel/1.png',
-				'../../static/image/storageLevel/2.png',
-				'../../static/image/storageLevel/3.png',
-				'../../static/image/storageLevel/4.png',
-				'../../static/image/storageLevel/5.png',
-			],
+			lvImgList:['../../static/img/storageLevel/-h-1.png','../../static/img/storageLevel/-h-2.png','../../static/img/storageLevel/-h-3.png','../../static/img/storageLevel/-h-4.png','../../static/img/storageLevel/-h-5.png','../../static/img/storageLevel/-h-6.png','../../static/img/storageLevel/-h-7.png','../../static/img/storageLevel/-h-8.png','../../static/img/storageLevel/-h-9.png','../../static/img/storageLevel/-h-10.png','../../static/img/storageLevel/-h-11.png',],
 			level_list: [],
 			user_info: {},
 			headerBg: false,

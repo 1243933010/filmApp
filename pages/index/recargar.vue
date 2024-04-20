@@ -22,7 +22,7 @@
 						<input type="number" v-model="recargarNum" placeholder="0" />
 					</view>
 					<view class="list">
-						<view class="item" v-for="(item, index) in recargar" :key="item">
+						<view class="item" v-for="(item, index) in recargar" :key="item" :class="{ active: checkIndex === index }" @click="checkNum(index)">
 							<view class="num">{{ item }}</view>
 						</view>
 					</view>

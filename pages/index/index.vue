@@ -168,26 +168,76 @@ export default {
 		menuList() {
 			return [
 				{
-					iconUrl: "../../static/image/index/menu1.png",
-					tit: "Platform Rewards", // TODO
+					iconUrl: "../../static/img/icon/index/11.png",
+					tit: this.$t("index.menuBtn1"),
 					link: "/pages/index/abloutList",
 				},
 				{
-					iconUrl: "../../static/image/index/menu2.png",
-					tit: "VIP level", // TODO
+					iconUrl: "../../static/img/icon/index/22.png",
+					tit: this.$t("index.menuBtn2"),
 					link: "/pages/index/qualifications",
 				},
 				{
-					iconUrl: "../../static/image/index/menu3.png",
-					tit: "Invite friends", // TODO
+					iconUrl: "../../static/img/icon/index/33.png",
+					tit: this.$t("index.menuBtn3"),
 					link: "/pages/index/activityInfo1",
 				},
 				{
-					iconUrl: "../../static/image/index/menu4.png",
-					tit: "Download the app", // TODO
+					iconUrl: "../../static/img/icon/index/44.png",
+					tit: this.$t("index.menuBtn4"),
 					link: "/pages/index/storageLevel",
 				},
+				{
+					iconUrl: "../../static/img/icon/index/55.png",
+					tit: this.$t("index.menuBtn5"),
+					link: "/pages/index/recargar",
+				},
+				{
+					iconUrl: "../../static/img/icon/index/66.png",
+					tit: this.$t("index.menuBtn6"),
+					link: "/pages/index/withdraw",
+				},
+				{
+					iconUrl: "../../static/img/icon/index/77.png",
+					tit: this.$t("index.menuBtn7"),
+					link: "/pages/index/invitePage",
+				},
+				{
+					iconUrl: "../../static/img/icon/index/88.png",
+					tit: this.$t("index.menuBtn8"),
+					link: "/pages/index/activity",
+				},
+				{
+					iconUrl: "../../static/img/icon/index/88.png",
+					tit: this.$t("index.menuBtn9"),
+					link: "/pages/join/join",
+				},
 			];
+			
+			
+			
+			// return [
+			// 	{
+			// 		iconUrl: "../../static/image/index/menu1.png",
+			// 		tit: "Platform Rewards", // TODO
+			// 		link: "/pages/index/activityInfo1",
+			// 	},
+			// 	{
+			// 		iconUrl: "../../static/image/index/menu2.png",
+			// 		tit: "VIP level", // TODO
+			// 		link: "/pages/index/storageLevel",
+			// 	},
+			// 	{
+			// 		iconUrl: "../../static/image/index/menu3.png",
+			// 		tit: "Invite friends", // TODO
+			// 		link: "/pages/join/invite",
+			// 	},
+			// 	{
+			// 		iconUrl: "../../static/image/index/menu4.png",
+			// 		tit: "Download the app", // TODO
+			// 		link: "/pages/index/qualifications",
+			// 	},
+			// ];
 		},
 	},
 	mounted() {
@@ -386,12 +436,13 @@ export default {
 
 			.menu-list {
 				.df(stretch, space-between);
+				flex-wrap: wrap;
 
 				.menu-item {
 					.df(center, flex-start, column);
 					
-					padding: 0 15rpx;
-					width: 25%;
+					padding: 0 15rpx 30rpx;
+					width: 33.33%;
 					text-align: center;
 
 					.pic {
