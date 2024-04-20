@@ -1,6 +1,8 @@
 <template>
-	<view class="profix-page-container storage-level-page">
-		<hx-navbar :config="config" />
+	<view class="profix-page-container storage-level-page deal-page">
+		<!-- <hx-navbar :config="config" /> -->
+		<scroll-view scroll-y="true" class="page-scroll" @scroll="scrollHandle">
+		<hx-navbar :config="config" :class="{ 'has-bg': headerBg }" style="position: fixed; top: 0; left: 0; right: 0; z-index: 99" />
 		<view class="form-container">
 
 
@@ -29,7 +31,7 @@
 
 
 		</view>
-
+</scroll-view>
 	</view>
 </template>
 
@@ -154,7 +156,9 @@
 	@import "../../static/less/variable.less";
 
 
-
+.page-scroll {
+		background: #1e1f28;
+	}
 	.form-container {
 		padding: 65rpx 45rpx;
 		border-radius: 20rpx 20rpx 0 0;
