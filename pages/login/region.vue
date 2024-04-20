@@ -23,11 +23,11 @@
 					<view class="input-con invite-code">
 						<view class="inp">
 							<!-- TODO -->
-							<input type="text" name="pwd" v-model="formData.captcha_code" placeholder="请输入密码" />
+							<input type="text" name="pwd" v-model="formData.captcha_code" placeholder="请输入验证码" />
 						</view>
 						<!-- TODO -->
 						<button class="invite-btn" v-if="typeof codeText == 'number'">{{ codeText }}s</button>
-						<button class="invite-btn" v-if="typeof codeText == 'string'" @click="handleTime">获取邀请码</button>
+						<button class="invite-btn" v-if="typeof codeText == 'string'" @click="handleTime">获取验证码</button>
 					</view>
 
 					<!-- TODO -->
@@ -41,13 +41,12 @@
 					</view>
 
 					<!-- TODO -->
-					<label for="account">邀请码</label>
+					<!-- <label for="account">邀请码</label>
 					<view class="input-con account">
 						<view class="inp">
-							<!-- TODO -->
 							<input type="number" name="account" v-model="formData.invitation_code" placeholder="请输入邀请码" />
 						</view>
-					</view>
+					</view> -->
 
 					<view class="btn-list">
 						<!-- TODO -->
@@ -75,7 +74,11 @@ export default {
 			timeFnc: null,
 			codeText: "",
 			formData: {
-				mobile: "", // 手机号
+				register_type:'1',
+				email: "", // 邮箱
+				key:"",
+				captcha_code:"",
+				password_confirmation:'',
 				password_confirmation: "", // 确认密码
 				invitation_code: "", // 邀请码
 				password: "", // 密码

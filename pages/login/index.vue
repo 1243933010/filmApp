@@ -33,9 +33,9 @@
 						<view class="eye-icon" :class="{ close: pwdType }" @click="handleEye"></view>
 					</view>
 					<view class="other">
-						<view class="view1" @click="goPage('/pages/login/region')">
+						<view class="view1" @click="goPage('/pages/login/mobileRegion')">
 							<!-- TODO -->
-							<text>邮箱注册</text>
+							<text>手机注册</text>
 						</view>
 						<view class="view1" @click="goPage('/pages/login/forgetEmailPassword')">
 							<!-- TODO -->

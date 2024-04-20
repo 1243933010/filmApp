@@ -1,5 +1,6 @@
 {
 	"common": {
+		"app.password": "password",
 		// "login.code": "请输入验证码",
 		// "login.get-code": "获取验证码",
 		// "login.forget": "忘记密码?",
@@ -236,6 +237,7 @@
 		"app.transactionPassword": "Transaction password",
 		"app.resetTransactionPassword": "Please reset the transaction password",
 		"app.saveChanges": "Changes",
+		
 		"app.password1": "Please enter your old password",
 		"app.password2": "Please enter a new password",
 		"app.password3": "New password confirmation",

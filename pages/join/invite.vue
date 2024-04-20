@@ -9,24 +9,24 @@
 				</view>
 
 				<view class="qr-code-box glass-box">
-					<view class="left">
+					<!-- <view class="left">
 						<view class="pic">
 							<img src="" mode="widthFix" class="img" />
 						</view>
-					</view>
+					</view> -->
 					<view class="right">
 						<view class="invite-code">
 							<!-- TODO -->
 							<view class="label">邀请码</view>
-							<view class="code">#62E8C7</view>
-							<view class="icon pic">
+							<view class="code">{{invitationObj.invitation_code}}</view>
+							<view class="icon pic"  @click="copy(invitationObj.invitation_code)">
 								<img src="@/static/image/icon/copy.png" mode="widthFix" class="img" />
 							</view>
 						</view>
 						<view class="url">
-							<view class="text">https://fanyi.baidu.com/transhttps://fanyi.baidu.com/trans</view>
+							<view class="text">{{invitationObj.invitation_url}}</view>
 							<view class="icon pic">
-								<img src="@/static/image/icon/copy.png" mode="widthFix" class="img" />
+								<img  @click="copy(invitationObj.invitation_url)" src="@/static/image/icon/copy.png" mode="widthFix" class="img" />
 							</view>
 						</view>
 					</view>
@@ -84,16 +84,16 @@
 						</view>
 					</view>
 
-					<view class="label is-vip">
+					<!-- <view class="label is-vip">
 						<view class="icon pic">
 							<img src="@/static/image/icon/vip.png" mode="widthFix" class="img" />
 						</view>
 						<view class="text">普通用户</view>
-					</view>
+					</view> -->
 
-					<view class="gift-list">
+					<!-- <view class="gift-list">
 						<view class="num-list">
-							<view class="item" v-for="item in vipNumList" :key="item">
+							<view class="item" v-for="item in inviteInfo" :key="item">
 								{{ item }}人
 								<view class="single" v-if="inviteNum === index - 1 && rememberLevel !== 'vip'"></view>
 							</view>
@@ -119,7 +119,8 @@
 								</view>
 							</view>
 						</view>
-					</view>
+					</view> -->
+				
 				</view>
 				
 				<view class="btn-box">查看订单</view>
@@ -130,7 +131,7 @@
 
 <script>
 import hxNavbar from "@/components/hx-navbar.vue";
-import { $request } from "@/utils/request.js";
+import { $request,url } from "@/utils/request.js";
 export default {
 	name: "邀请好友",
 	components: {
@@ -138,104 +139,42 @@ export default {
 	},
 	data() {
 		return {
-			headerBg: false,
-			// 当前用户的会员等级
-			rememberLevel: "regular",
-			inviteNum: 2,
-			// 普通用户的
-			regularNumList: [1, 3, 5, 8, 10, 15, 20, 30],
-			regularEnvelope: [
-				{
-					num: 50,
-					type: "USD",
-					isReceive: true,
+			imgUrl: url,
+			value: '',
+			index: 0,
+			invitationObj: {
+				first: {
+					total_count: 0,
+					total_commission: 0
 				},
-				{
-					num: 50,
-					type: "USD",
-					isReceive: false,
+				two: {
+					total_count: 0,
+					total_commission: 0
 				},
-				{
-					num: 50,
-					type: "USD",
-					isReceive: false,
+				three: {
+					total_count: 0,
+					total_commission: 0
 				},
-				{
-					num: 50,
-					type: "USD",
-					isReceive: false,
+				four: {
+					total_people: 0,
+					vip_number: 0
 				},
-				{
-					num: 50,
-					type: "USD",
-					isReceive: false,
-				},
-				{
-					num: 50,
-					type: "USD",
-					isReceive: false,
-				},
-				{
-					num: 50,
-					type: "USD",
-					isReceive: false,
-				},
-				{
-					num: 50,
-					type: "USD",
-					isReceive: false,
-				},
-				{
-					num: 50,
-					type: "USD",
-					isReceive: false,
-				},
-			],
-			// vip用户的
-			vipNumList: [2, 3, 5, 8, 10, 15, 20, 30],
-			vipEnvelope: [
-				{
-					num: 50,
-					type: "USD",
-					isReceive: false,
-				},
-				{
-					num: 50,
-					type: "USD",
-					isReceive: false,
-				},
-				{
-					num: 50,
-					type: "USD",
-					isReceive: false,
-				},
-				{
-					num: 50,
-					type: "USD",
-					isReceive: false,
-				},
-				{
-					num: 50,
-					type: "USD",
-					isReceive: false,
-				},
-				{
-					num: 50,
-					type: "USD",
-					isReceive: false,
-				},
-				{
-					num: 50,
-					type: "USD",
-					isReceive: false,
-				},
-				{
-					num: 50,
-					type: "USD",
-					isReceive: false,
-				},
-			],
+				commission: {},
+				number_of_people: {}
+			},
+			inviteInfo: {},
+			temporaryItem: {},
+			formData: {
+				country: '',
+				name: '',
+				mobile: '',
+				address: ''
+			}
 		};
+	},
+	mounted() {
+		this.invitation();
+		this.incentiveIndex()
 	},
 	computed: {
 		config() {
@@ -246,6 +185,29 @@ export default {
 				backgroundColor: "transparent",
 			};
 		},
+		counteList() {
+			return [
+				this.$t("join.yq31"), 
+				this.$t("join.yq32"), 
+				this.$t("join.yq33"), 
+				this.$t("join.yq34"), 
+				this.$t("join.yq35"), 
+				this.$t("join.yq36"), 
+				this.$t("join.yq37"), 
+				this.$t("join.yq38"), 
+				this.$t("join.yq39"), 
+				this.$t("join.yq40"), 
+				this.$t("join.yq41"), 
+				this.$t("join.yq42"), 
+				this.$t("join.yq43"), 
+				this.$t("join.yq44"), 
+				this.$t("join.yq45")
+				// {label:this.$t("join.yq20"),value:this.$t("join.yq20")},
+				// {label:this.$t("join.yq21"),value:this.$t("join.yq21")},
+				// {label:this.$t("join.yq22"),value:this.$t("join.yq22")},
+				// {label:this.$t("join.yq23"),value:this.$t("join.yq23")},
+			]
+		}
 	},
 	methods: {
 		scrollHandle(event) {
@@ -255,6 +217,85 @@ export default {
 			} else {
 				this.headerBg = false;
 			}
+		},
+		listenLocale() {
+			this.invitation();
+			this.incentiveIndex()
+		},
+		async handleSubmit() {
+			this.formData.country = this.counteList[this.index]
+			let res = await $request('incentiveDrawing', {
+				...this.formData,
+				...{
+					id: this.temporaryItem.id
+				}
+			});
+			console.log(res)
+			uni.showToast({
+				icon: 'none',
+				title: res.data.msg
+			})
+			if (res.data.code === 0) {
+				this.incentiveIndex()
+				return
+			}
+		},
+		bindPickerChange: function(e) {
+			console.log('picker发送选择改变，携带值为', e.detail.value)
+			this.index = e.detail.value
+		},
+		openDialog(item) {
+			this.$refs.popup.open('bottom')
+			this.temporaryItem = item;
+			// uni.navigateTo({
+			// 	url: './joinDetail'
+			// })
+		},
+		goUrl() {
+			this.$refs.popup.close()
+			uni.navigateTo({
+				url: './joinDetail'
+			})
+		},
+		copy(text) {
+			uni.setClipboardData({
+				data: text,
+				success: (res) => {
+					uni.showToast({
+						icon: 'none',
+						title: 'success'
+					})
+				}
+			})
+		},
+		async incentiveIndex() {
+			let res = await $request('incentiveIndex', {});
+			console.log(res)
+			if (res.data.code === 0) {
+				this.inviteInfo = res.data.data;
+				return
+			}
+			uni.showToast({
+				icon: 'none',
+				title: res.data.msg
+			})
+		},
+		async invitation() {
+			let res = await $request('invitation', {});
+			console.log(res)
+			if (res.data.code === 0) {
+				this.invitationObj = res.data.data;
+				return
+			}
+			uni.showToast({
+				icon: 'none',
+				title: res.data.msg
+			})
+		},
+		goTeamInfo(index) {
+			uni.navigateTo({
+				url: `/pages/join/teamInfo?id=${index}`,
+			});
 		},
 	},
 };

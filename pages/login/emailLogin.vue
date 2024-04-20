@@ -76,8 +76,8 @@
 				isMember: true,
 				formData: {
 					login_type: '1',
-					email: "1243933010@qq.com",
-					password: "1234567",
+					email: "163123456@qq.com",
+					password: "123456",
 				},
 				headerBg: false
 			};
@@ -100,7 +100,7 @@
 				this.pwdType = !this.pwdType;
 			},
 			loginHandle() {
-				$request("emailLogin", this.formData).then(res => {
+				$request("login", this.formData).then(res => {
 					let {
 						data,
 						code,

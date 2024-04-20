@@ -6,7 +6,13 @@
 			<view class="index-scroll page-con">
 				<view class="banner">
 					<view class="pic">
-						<image src="@/static/image/index/banner.png" class="img" mode="widthFix"></image>
+						<swiper class="swiper" vertical circular autoplay>
+							<swiper-item v-for="(item, index) in swiperList" :key="index" @click="newLink(item)">
+								<!-- <view class="swiper-item">{{ item.image }}</view> -->\
+								<image :src=" item.image" class="img" mode="widthFix"></image>
+							</swiper-item>
+						</swiper>
+						<!-- <image src="@/static/image/index/banner.png" class="img" mode="widthFix"></image> -->
 					</view>
 				</view>
 
@@ -81,7 +87,7 @@
 								<view class="product-img pic">
 									<image src="@/static/image/goodsImg1.png" mode="widthFix" class="img" @click="goProductDetail(item)"></image>
 									<view class="like-price">
-										<!-- TODO -->
+										
 										<view class="price-btn">From $39</view>
 										<view class="icon pic" @click="likekHanle(item)">
 											<img :src="item.likeIcon" class="img" />

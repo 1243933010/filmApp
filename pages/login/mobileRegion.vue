@@ -14,7 +14,7 @@
 					<view class="input-con account">
 						<view class="inp">
 							<!-- TODO -->
-							<input type="number" name="account" v-model="formData.mobile" placeholder="请输入邮箱" />
+							<input type="number" name="account" v-model="formData.mobile" placeholder="请输入手机号" />
 						</view>
 					</view>
 
@@ -63,6 +63,7 @@ export default {
 		return {
 			pwdType: true,
 			formData: {
+				register_type:'0',
 				mobile: "",
 				password_confirmation: "",
 				invitation_code: "",

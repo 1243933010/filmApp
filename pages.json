@@ -386,7 +386,7 @@
 				"text": "home"
 			},
 			{
-				"pagePath": "pages/join/join",
+				"pagePath": "pages/join/invite",
 				"iconPath": "static/img/tabbar/join_select.png",
 				"selectedIconPath": "static/img/tabbar/join_select.png",
 				"text": "join"
