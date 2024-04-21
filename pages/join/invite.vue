@@ -64,7 +64,7 @@
 
 
 					<view class="invite-box-len">
-						<view class="invite-box-len-items">
+						<view class="invite-box-len-items" v-if="inviteInfo.vip_user.length>0">
 							<scroll-view class="scroll-view_H" style="white-space: nowrap;" scroll-x="true"
 								@scroll="scroll" scroll-left="120">
 								<view class="item" style="display: inline-block;"
