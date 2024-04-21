@@ -1,7 +1,7 @@
 <template>
 	<view class="profix-page-container email-verification-login-page">
 		<scroll-view :scroll-y="true" :scroll-x="false" @scroll="scrollHandle" class="page-scroll">
-			<customHeader :logoTag="true" :class="{'has-bg': headerBg}" style="position: fixed; top: 0; width: 100%" />
+			<customHeader :logoTag="true" :class="{'has-bg': headerBg}" style="position: fixed; top: 0; width: 100%; z-index: 99;" />
 			<view class="email-verification-login-scroll page-con">
 				<view class="login-tit">
 					<text>Movie software</text>
@@ -44,8 +44,12 @@
 						<!-- TODO -->
 						<button class="button login-btn" :disabled="!(formData.mail && formData.captcha_code)" @click="loginHandle">登录</button>
 						<!-- TODO -->
-						<button class="button region-btn" @click="goPage(`/pages/login/emailLogin`)">账号密码登录</button>
-						<button class="button region-btn" @click="goPage(`/pages/login/index`)">手机号登录</button>
+						<button class="button region-btn" @click="goPage(`/pages/login/emailLogin`)">
+							<text>账号密码登录</text>
+						</button>
+						<button class="button region-btn" @click="goPage(`/pages/login/index`)">
+							<text>手机号登录</text>
+						</button>
 					</view>
 				</view>
 			</view>
@@ -275,6 +279,11 @@
 					&.region-btn {
 						.btn-box(50px, transparent);
 						.glassBg();
+						
+						& > * {
+							position: relative;
+							z-index: 1;
+						}
 					}
 				}
 			}

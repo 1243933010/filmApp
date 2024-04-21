@@ -2,7 +2,7 @@
 	<view class="profix-page-container mobile-region-page">
 		<scroll-view :scroll-y="true" :scroll-x="false" @scroll="scrollHandle" class="page-scroll">
 			<!-- <customHeader style="z-index: 0" /> -->
-			<customHeader :logoTag="true" :class="{ 'has-bg': headerBg }" style="position: fixed; top: 0; width: 100%" />
+			<customHeader :logoTag="true" :class="{ 'has-bg': headerBg }" style="position: fixed; top: 0; width: 100%; z-index: 99;" />
 			<view class="mobile-region-scroll page-con">
 				<view class="login-tit">
 					<text>Movie software</text>
@@ -41,9 +41,13 @@
 						<!-- TODO -->
 						<button class="button login-btn" :disabled="!(formData.mobile && formData.password && formData.invitation_code)" @click="region">注册</button>
 						<!-- TODO -->
-						<button class="button region-btn" @click="goPage('/pages/login/forgetEmailPassword')">邮箱注册</button>
+						<button class="button region-btn" @click="goPage('/pages/login/forgetEmailPassword')">
+							<text>邮箱注册</text>
+						</button>
 						<!-- TODO -->
-						<button class="button region-btn" @click="goPage(`/pages/login/emailLogin`)">已有账号，请前往登录</button>
+						<button class="button region-btn" @click="goPage(`/pages/login/emailLogin`)">
+							<text>已有账号，请前往登录</text>
+						</button>
 					</view>
 				</view>
 			</view>
@@ -238,6 +242,11 @@ export default {
 					&.region-btn {
 						.btn-box(50px, transparent);
 						.glassBg();
+						
+						& > * {
+							position: relative;
+							z-index: 1;
+						}
 					}
 				}
 			}
