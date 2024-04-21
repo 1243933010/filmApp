@@ -1,14 +1,19 @@
 <template>
 	<view class="profix-page-container activity-page">
-		<hx-navbar :config="config" />
-		<view class="activity-scroll page-scroll">
-			<view class="list">
-				<view  class="item" v-for="(item,index) in list" :key="index" @click="goUrl(item)">
-					<!-- <view class="item-tit">{{ $t("activity.item1")  }}</view> -->
-					<view class="">{{item.title}}</view>
+		<scroll-view :scroll-y="true" class="page-scroll" @scroll="scrollHandle">
+			<hx-navbar :config="config" :class="{ 'has-bg': headerBg }" style="position: fixed; top: 0; left: 0; right: 0; z-index: 99" />
+			<view class="activity-scroll page-con">
+				<view class="list">
+					<view class="item" v-for="(item, index) in list" :key="index" @click="goUrl(item)">
+						<!-- <view class="item-tit">{{ $t("activity.item1")  }}</view> -->
+						<view class="item-tit">{{ item.title }}</view>
+						<view class="arrow-icon pic">
+							<img src="@/static/img/right_arrow.png" class="img" mode="widthFix" />
+						</view>
+					</view>
 				</view>
 			</view>
-		</view>
+		</scroll-view>
 	</view>
 </template>
 
@@ -21,7 +26,8 @@ export default {
 	},
 	data() {
 		return {
-			list:[]
+			list: [],
+			headerBg: false,
 		};
 	},
 	computed: {
@@ -29,60 +35,64 @@ export default {
 			return {
 				title: this.$t("activity.pageTit"),
 				color: "#ffffff",
-				// backgroundColor: [1, "#24bdab"],
-				// 背景图片（array则为滑动切换背景图，string为单一背景图）
-				// backgroundImg: ['/static/xj.jpg','/static/logo.jpg'],
-				backgroundImg: "../../static/img/header_tabber.png",
+				backgroundColor: "transparent",
 			};
 		},
 	},
-		mounted() {
-			this.getActivity();
+	mounted() {
+		this.getActivity();
+	},
+	methods: {
+		scrollHandle(event) {
+			const { scrollTop } = event.detail;
+			if (scrollTop >= 50) {
+				this.headerBg = true;
+			} else {
+				this.headerBg = false;
+			}
 		},
-		methods:{
-			  async getActivity(){
-				  let res = await $request('activity',{})
-				  console.log(res)
-				  if(res.data.code===0){
-					  this.list = res.data.data;
-				  }
-			  },
-			  goUrl(item){
-				  uni.setStorageSync('activityInfo',item)
-				  uni.navigateTo({
-				  	url:`/pages/index/activityInfo`
-				  })
-			  }
-		}
+		async getActivity() {
+			let res = await $request("activity", {});
+			console.log(res);
+			if (res.data.code === 0) {
+				this.list = res.data.data;
+			}
+		},
+		goUrl(item) {
+			uni.setStorageSync("activityInfo", item);
+			uni.navigateTo({
+				url: `/pages/index/activityInfo`,
+			});
+		},
+	},
 };
 </script>
 
 <style lang="less" scoped>
 @import "../../static/less/variable.less";
-page {
-	background-color: #f5f4f9;
-}
 
 .activity-page {
 	.activity-scroll {
+		padding: 120rpx 0 0;
+		
 		.list {
-			margin-left: -30rpx;
-			margin-right: -30rpx;
-
 			.item {
-				background-color: #fff;
-				margin-bottom: 1px;
-				padding: 46rpx 52rpx;
-
+				margin-bottom: 2px;
+				padding: 45rpx;
 				.df(center, space-between);
+				.glassBg(30px, 20, #2f303b);
+
+				& > * {
+					position: relative;
+					z-index: 1;
+				}
 
 				.item-tit {
+					color: #fff;
 				}
 
 				.arrow-icon {
 					width: 14rpx;
-					height: 25rpx;
-					background: url("../../static/img/right_arrow.png") no-repeat top left / 100% 100%;
 				}
 			}
 		}

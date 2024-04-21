@@ -89,9 +89,8 @@ export default {
 			}
 		},
 		checkNum(index) {
-			console.log(typeof index, index);
 			this.checkIndex = index;
-			this.recargarNum = index === 0 ? this.recargarNum : this.recargar[index];
+			this.recargarNum = this.recargar[index];
 		},
 		recargarHandle() {
 			// 充值成功后的弹窗提示
@@ -105,12 +104,6 @@ export default {
 			uni.navigateTo({
 				url: `/pages/me/onlinePayment?recargarNum=${this.recargarNum}`,
 			});
-			// this.$refs.popup.open("center");
-
-			// let timer = setTimeout(() => {
-			// 	this.$refs.popup.close();
-			// 	clearTimeout(timer);
-			// }, 2000);
 		},
 		async getWalletInfo() {
 			let res = await $request("walletInfo", {});

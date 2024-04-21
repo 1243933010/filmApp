@@ -1,11 +1,13 @@
 <template>
 	<view class="profix-page-container about-us-page">
-		<hx-navbar :config="config" />
-		<view class="about-us-scroll page-scroll">
-			<view class="name">{{ noticesObj.name }}</view>
-			<view class="synopsis">{{ noticesObj.synopsis }}</view>
-			<rich-text class="content" :nodes="noticesObj.content"></rich-text>
-		</view>
+		<scroll-view :scroll-y="true" class="page-scroll" @scroll="scrollHandle">
+			<hx-navbar :config="config" :class="{ 'has-bg': headerBg }" style="position: fixed; top: 0; left: 0; right: 0; z-index: 99" />
+			<view class="about-us-scroll page-con">
+				<view class="name">{{ noticesObj.name }}</view>
+				<view class="synopsis">{{ noticesObj.synopsis }}</view>
+				<rich-text class="content" :nodes="noticesObj.content"></rich-text>
+			</view>
+		</scroll-view>
 	</view>
 </template>
 
@@ -19,6 +21,7 @@ export default {
 	data() {
 		return {
 			noticesObj: {},
+			headerBg: false,
 		};
 	},
 	computed: {
@@ -26,10 +29,7 @@ export default {
 			return {
 				title: this.$t("notices.pageTit"),
 				color: "#ffffff",
-				// backgroundColor: [1, "#24bdab"],
-				// 背景图片（array则为滑动切换背景图，string为单一背景图）
-				// backgroundImg: ['/static/xj.jpg','/static/logo.jpg'],
-				backgroundImg: "../../static/img/header_tabber.png",
+				backgroundColor: "transparent",
 			};
 		},
 	},
@@ -38,32 +38,44 @@ export default {
 		console.log(noticesObj);
 		this.noticesObj = noticesObj;
 	},
+	methods: {
+		scrollHandle(event) {
+			const { scrollTop } = event.detail;
+			if (scrollTop >= 50) {
+				this.headerBg = true;
+			} else {
+				this.headerBg = false;
+			}
+		},
+	},
 };
 </script>
 
 <style lang="less">
 .about-us-page {
 	.about-us-scroll {
-		padding-top: 40rpx;
+		padding-top: 120rpx;
+
 		.name {
-			font-size: 34rpx;
+			font-size: 40rpx;
 			margin-bottom: 30rpx;
 			text-align: center;
 			font-weight: bold;
+			color: #fff;
 		}
-		
+
 		.synopsis {
 			margin-bottom: 30rpx;
-			font-size: 28rpx;
+			font-size: 24rpx;
 			line-height: 1.4;
-			color: #666666;
+			color: #fff;
 		}
-		
+
 		.content {
 			margin-top: 30rpx;
-			font-size: 28rpx;
+			font-size: 24rpx;
 			line-height: 1.4;
-			color: #666666;
+			color: #fff;
 		}
 	}
 }

@@ -5,17 +5,17 @@
 
 			<view class="select-seat-scroll page-con">
 				<view class="seat-img pic">
-					<img src="" mode="widthFix" class="img" />
+					<img :src="info.nft_img" mode="widthFix" class="img" />
 				</view>
 				<view class="tab-list">
-					<view class="tab-item red-text" style="background-color: #2F303B;">
+					<view class="tab-item" :class="{active: tabVal == 0}" @click="tabVal = 0">
 						<view class="pic">
 							<img src="@/static/image/icon/filter2.png" mode="widthFix" class="img" />
 						</view>
 						<!-- TODO -->
 						筛选
 					</view>
-					<view class="tab-item">
+					<view class="tab-item" :class="{active: tabVal == 1}" @click="tabVal = 1">
 						<view class="pic">
 							<img src="@/static/image/icon/filter1.png" mode="widthFix" class="img" />
 						</view>
@@ -33,7 +33,7 @@
 					<view class="vote-item">
 						<view class="line"></view>
 						<view class="vote-info">
-							<view class="cinema-name">Orchestra  Stalls</view>
+							<view class="cinema-name">Orchestra Stalls</view>
 							<view class="vote-position">
 								<!-- TODO -->
 								<view class="row-num">第6排</view>
@@ -43,7 +43,7 @@
 							<!-- TODO -->
 							<view class="pending red-text">正在出票...</view>
 						</view>
-						<view class="vote-price red-text">39.00</view>
+						<view class="vote-price red-text">{{ info.money }}</view>
 					</view>
 				</view>
 			</view>
@@ -64,6 +64,7 @@ export default {
 			productId: 1,
 			info: {},
 			headerBg: false,
+			tabVal: 1
 		};
 	},
 	onLoad: function ({ id }) {
@@ -114,7 +115,7 @@ export default {
 	}
 
 	.select-seat-scroll {
-		padding: 200rpx 0 0;
+		padding: 0;
 		
 		.red-text {
 			color: #EF414A !important;
@@ -135,7 +136,13 @@ export default {
 				
 				padding-top: 30rpx;
 				padding-bottom: 24rpx;
-				color: #C0C3D2;
+				color: #EF414A;
+				background-color: #2F303B;
+				
+				&.active {
+					color: #C0C3D2;
+					background-color: #1C2025;
+				}
 				
 				.pic {
 					margin-right: 8rpx;
