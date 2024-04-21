@@ -5,17 +5,17 @@
 			<view class="deal-scroll page-con">
 				<scroll-view scroll-y="true" class="tab-view">
 					<view class="tab-list">
-						<view class="tab-item" :class="{ active: checkTab === index }" v-for="(item, index) in tabList" :key="index" @click="changeTab(item,index)">{{ item.title }}</view>
+						<view class="tab-item" :class="{ active: checkTab === index }" v-for="(item, index) in tabList" :key="index" @click="changeTab(item, index)">{{ item.title }}</view>
 					</view>
 				</scroll-view>
 
-				<view class="deal-list" >
+				<view class="deal-list">
 					<view class="list-item" v-for="item in dealList" :key="index">
 						<view class="left">
-							<view class="top">{{item.type_txt||item.status_text}}</view>
-							<view class="bottom">{{item.updated_at||item.created_at}}</view>
+							<view class="top">{{ item.type_txt || item.status_text }}</view>
+							<view class="bottom">{{ item.updated_at || item.created_at }}</view>
 						</view>
-						<view class="right">+{{item.money||item.amount*1}}</view>
+						<view class="right">{{ item.money || item.amount * 1 }}</view>
 					</view>
 					<!-- TODO -->
 					<view class="tips">暂无内容</view>
@@ -37,13 +37,13 @@ export default {
 		return {
 			checkTab: 0,
 			dealList: [],
-			dealPage:{
-				page:1,
-				page_size:20
+			dealPage: {
+				page: 1,
+				page_size: 20,
 			},
-			requestUrl:['','rebate','buy_vip','',''],
-			url:'userAccount',
-			requestBool:true,
+			requestUrl: ["", "rebate", "buy_vip", "", ""],
+			url: "userAccount",
+			requestBool: true,
 			headerBg: false,
 		};
 	},
@@ -57,20 +57,20 @@ export default {
 		},
 		tabList() {
 			return [
-				{title:this.$t("deal.listItem1"),label:''},
-				{title:this.$t("deal.listItem2"),label:'rebate'},
-				{title:this.$t("deal.listItem3"),label:'buy_vip'},
-				{title:this.$t("deal.listItem4"),label:'recharge'},
-				{title:this.$t("deal.listItem5"),label:'withdraw'},
+				{ title: this.$t("deal.listItem1"), label: "" },
+				{ title: this.$t("deal.listItem2"), label: "rebate" },
+				{ title: this.$t("deal.listItem3"), label: "buy_vip" },
+				{ title: this.$t("deal.listItem4"), label: "recharge" },
+				{ title: this.$t("deal.listItem5"), label: "withdraw" },
 			];
 		},
 	},
-	onReachBottom(){
-		this.dealPage.page++
-		this.requestFnc(this.url,this.requestUrl[this.checkTab]);
+	onReachBottom() {
+		this.dealPage.page++;
+		this.requestFnc(this.url, this.requestUrl[this.checkTab]);
 	},
-	mounted(){
-		this.requestFnc(this.url,this.requestUrl[this.checkTab]);
+	mounted() {
+		this.requestFnc(this.url, this.requestUrl[this.checkTab]);
 	},
 	methods: {
 		scrollHandle(event) {
@@ -81,29 +81,28 @@ export default {
 				this.headerBg = false;
 			}
 		},
-		changeTab(item,index) {
+		changeTab(item, index) {
 			this.checkTab = index;
 			this.dealPage.page = 1;
 			this.dealList = [];
 			// let url = 'userAccount'
 			this.url = "userAccount";
-			if(item.label == 'recharge'){
-				this.url = 'rechargeIndex'
-			}else if(item.label =='withdraw'){
-				this.url = 'withdraw_list'
+			if (item.label == "recharge") {
+				this.url = "rechargeIndex";
+			} else if (item.label == "withdraw") {
+				this.url = "withdraw_list";
 			}
-			this.requestFnc(this.url,item.label);
+			this.requestFnc(this.url, item.label);
 		},
-		async requestFnc(url,type){
-			uni.showLoading()
-			let res = await $request(url,{...this.dealPage,change_tag:type});
-			uni.hideLoading()
-			console.log(res)
-			if(res.data.code===0){
+		async requestFnc(url, type) {
+			uni.showLoading();
+			let res = await $request(url, { ...this.dealPage, change_tag: type });
+			uni.hideLoading();
+			console.log(res);
+			if (res.data.code === 0) {
 				this.dealList.push(...res.data.data.list);
 			}
 		},
-		
 	},
 };
 </script>
@@ -118,29 +117,29 @@ export default {
 
 	.deal-scroll {
 		padding-top: 120rpx;
-		
+
 		.tab-view {
 			position: fixed;
 			left: 0;
-			
+
 			border-radius: 0 10rpx 10rpx 0;
 			width: 24%;
 			height: calc(100vh - 120rpx);
 			// #ifdef H5
-				height: calc(100vh - 120rpx);
+			height: calc(100vh - 120rpx);
 			// #endif
-			background-color: #2F303B;
+			background-color: #2f303b;
 			text-align: center;
 			overflow: hidden;
 
 			.tab-item {
 				padding: 32rpx 0;
 				font-size: 24rpx;
-				color: #C0C3D2;
+				color: #c0c3d2;
 				line-height: 1.375;
 
 				&.active {
-					background-image: linear-gradient(to right, #F3254B 0%, #2F303B 100%);
+					background-image: linear-gradient(to right, #f3254b 0%, #2f303b 100%);
 					color: #fff;
 				}
 			}
@@ -156,13 +155,13 @@ export default {
 				border-radius: 20rpx;
 				border: 1px solid #707070;
 				padding: 30rpx 38rpx;
-				background-color: #2F303B;
+				background-color: #2f303b;
 
 				.df(center, space-between);
 
 				.left {
 					margin-right: 20rpx;
-					
+
 					.top {
 						margin-bottom: 22rpx;
 						font-size: 26rpx;
@@ -173,22 +172,22 @@ export default {
 
 					.bottom {
 						font-size: 24rpx;
-						color: #C0C3D2;
+						color: #c0c3d2;
 						line-height: 1.375;
 					}
 				}
 
 				.right {
 					font-size: 30rpx;
-					color: #F1334A;
+					color: #f1334a;
 					font-weight: bold;
 					line-height: 1.4;
 				}
 			}
-			
+
 			.tips {
 				margin-top: 60rpx;
-				color: #C0C3D2;
+				color: #c0c3d2;
 				text-align: center;
 				font-size: 24rpx;
 				line-height: 1.375;

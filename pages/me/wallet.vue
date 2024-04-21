@@ -12,7 +12,7 @@
 				<view class="ratio">
 					<view class="tit">美元T-TEC 20</view>
 					<!-- TODO -->
-					<input class="input-box" type="text" placeholder="请输入USDT收货地址" />
+					<input class="input-box" v-model="account" type="text" placeholder="请输入USDT收货地址" />
 					<!-- TODO -->
 					<view class="tips">注：默认法定货币  1美元=1美元</view>
 				</view>
