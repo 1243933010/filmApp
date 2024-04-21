@@ -13,7 +13,7 @@
 					<view class="input-con account">
 						<view class="inp">
 							<!-- TODO -->
-							<input type="mail" name="account" v-model="formData.mail" placeholder="请输入邮箱" />
+							<input type="mail" name="account" v-model="formData.email" placeholder="请输入邮箱" />
 						</view>
 					</view>
 
@@ -22,10 +22,12 @@
 					<view class="input-con invite-code">
 						<view class="inp">
 							<!-- TODO -->
-							<input type="text" name="pwd" v-model="formData.captcha_code" placeholder="请输入密码" />
+							<input type="text" name="pwd" v-model="formData.captcha_code" placeholder="请输入验证码" />
 						</view>
 						<!-- TODO -->
-						<button class="invite-btn">获取验证码</button>
+						<!-- <button class="invite-btn">获取验证码</button> -->
+						<view class="invite-btn" v-if="typeof codeText =='number'"  >{{codeText}}</view>
+						<view class="invite-btn"  v-if="typeof codeText =='string'"  @click="handleTime">{{codeLocale}}</view>
 					</view>
 					<view class="other">
 						<view class="view1" @click="goPage('/pages/login/region')">
@@ -70,6 +72,7 @@
 				timeFnc: null,
 				codeText: '',
 				formData: {
+					// register_type:'1',
 					email: '',
 					login_type: '2',
 					captcha_code: ''
@@ -149,7 +152,7 @@
 					})
 					return
 				}
-				$request("emailLogin", this.formData).then(res => {
+				$request("login", this.formData).then(res => {
 					let {data,code,msg} = res.data;
 					let {token} = data;
 					if (code !== 0) {
@@ -234,6 +237,7 @@
 				}
 				
 				.invite-btn {
+					white-space: nowrap;
 					.btn-box(10rpx, linear-gradient( 180deg, #F41B4B 0%, #ED4E49 100%));
 					
 					margin-left: 12rpx;

@@ -27,7 +27,7 @@
 						</view>
 						<!-- TODO -->
 						<button class="invite-btn" v-if="typeof codeText == 'number'">{{ codeText }}s</button>
-						<button class="invite-btn" v-if="typeof codeText == 'string'" @click="handleTime">获取验证码</button>
+						<button class="invite-btn" v-if="typeof codeText == 'string'" @click="handleTime">{{ codeText }}</button>
 					</view>
 
 					<!-- TODO -->
@@ -224,6 +224,7 @@ export default {
 				}
 
 				.invite-btn {
+					white-space: nowrap;
 					.btn-box(10rpx, linear-gradient( 180deg, #F41B4B 0%, #ED4E49 100%));
 
 					margin-left: 12rpx;

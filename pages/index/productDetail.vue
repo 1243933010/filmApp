@@ -10,7 +10,7 @@
 					</view>
 					<view class="product-tit">{{ info.nft_name }}</view>
 					<!-- TODO -->
-					<view class="product-time">${{ info.money }} - 时间占位符</view>
+					<view class="product-time">${{ info.money }} - {{info.created_at}}</view>
 					<view class="product-desc" v-if="info.nft_desc">{{ info.nft_desc }}</view>
 					<!-- TODO -->
 					<view class="go-btn" @click="goPage">进入</view>
