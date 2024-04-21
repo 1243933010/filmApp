@@ -62,13 +62,13 @@
 					<view class="product-list">
 						<view class="product-item" v-for="(item, index) in nftList" :key="index">
 							<view class="product-img pic">
-								<image src="@/static/image/goodsImg1.png" mode="widthFix" class="img" @click="goProductDetail(item)"></image>
+								<image :src="item.nft_img" mode="widthFix" class="img" @click="goProductDetail(item)"></image>
 							</view>
 							<view class="product-info">
 								<view class="product-tit">{{ item.nft_name }}</view>
 								<view class="product-time">$ {{ item.money * 1 }}</view>
 								<!-- TODO -->
-								<view class="product-desc">Jianye Times Cinema</view>
+								<!-- <view class="product-desc">Jianye Times Cinema</view> -->
 							</view>
 						</view>
 					</view>

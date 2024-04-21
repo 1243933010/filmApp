@@ -155,11 +155,11 @@ export default {
 					title: "我要提现",
 					src: "../../static/image/mine/5.png",
 				},
-				{
-					url: "/pages/index/aboutUs",
-					title: "关于我们",
-					src: "../../static/image/mine/6.png",
-				},
+				// {
+				// 	url: "/pages/index/aboutUs",
+				// 	title: "关于我们",
+				// 	src: "../../static/image/mine/6.png",
+				// },
 				{
 					url: "/pages/me/fwxy",
 					title: "服务协议",
@@ -209,6 +209,39 @@ export default {
 							url: "/pages/me/bindEmail",
 							title: this.$t("login.bindEmail"),
 							src: "../../static/img/mine/jz.png",
+						},
+						{
+							url: "/pages/login/forgetPwd",
+							title: this.$t("app.securityCenter"),
+							src: "../../static/img/mine/ws.png",
+						},
+						{
+							url: "/pages/index/recargar",
+							title: this.$t("app.recharge"),
+							src: "../../static/img/mine/cz.png",
+						},
+						{
+							url: "/pages/index/withdraw",
+							title: this.$t("app.withdraw"),
+							src: "../../static/img/mine/tx.png",
+						},
+						{
+							url: "",
+							title: this.$t("app.basicFunctions"),
+							src: "../../static/img/mine/jz.png",
+						},
+					];
+				}else{
+					this.linkList = [
+						{
+							url: "/pages/me/wallet",
+							title: this.$t("app.myWallet"),
+							src: "../../static/img/mine/lc.png",
+						},
+						{
+							url: "/pages/me/deal",
+							title: this.$t("app.financial"),
+							src: "../../static/img/mine/cw.png",
 						},
 						{
 							url: "/pages/login/forgetPwd",
