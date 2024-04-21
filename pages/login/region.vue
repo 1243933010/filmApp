@@ -41,12 +41,12 @@
 					</view>
 
 					<!-- TODO -->
-					<!-- <label for="account">邀请码</label>
+					<label for="account">邀请码</label>
 					<view class="input-con account">
 						<view class="inp">
 							<input type="number" name="account" v-model="formData.invitation_code" placeholder="请输入邀请码" />
 						</view>
-					</view> -->
+					</view>
 
 					<view class="btn-list">
 						<!-- TODO -->
@@ -74,6 +74,7 @@ export default {
 			timeFnc: null,
 			codeText: "",
 			formData: {
+				
 				register_type:'1',
 				email: "", // 邮箱
 				key:"",
@@ -157,7 +158,7 @@ export default {
 		},
 		async region() {
 			this.formData.password_confirmation = this.formData.password;
-			let data = await $request("emailRegister", this.formData);
+			let data = await $request("region", this.formData);
 			uni.showToast({
 				icon: "none",
 				title: data.data.msg,

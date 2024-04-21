@@ -70,6 +70,7 @@ export default {
 	onLoad: function ({ id }) {
 		this.productId = id;
 		this.getDetail(id);
+		
 	},
 	computed: {
 		config() {
@@ -82,6 +83,10 @@ export default {
 		},
 	},
 	methods: {
+		async getTicketsList(){
+			let res = await $request("ticketsList",{class_id:this.info.id});
+			console.log(res);
+		},
 		scrollHandle(event) {
 			const { scrollTop } = event.detail;
 			if (scrollTop >= 50) {
@@ -95,6 +100,7 @@ export default {
 			// console.log(res);
 			if (res.data.code === 0) {
 				this.info = res.data.data;
+				this.getTicketsList();
 				return;
 			}
 			uni.showToast({

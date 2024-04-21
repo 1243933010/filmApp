@@ -221,5 +221,9 @@ let requestObj = {
 		url:'/api/cash/returned_list',
 		type: 'POST',
 	},
+	ticketsList: {
+		url:'/api/tickets/TicketsList',
+		type: 'POST',
+	},
 }
 export default requestObj;
