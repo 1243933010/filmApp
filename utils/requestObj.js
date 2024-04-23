@@ -225,5 +225,21 @@ let requestObj = {
 		url:'/api/tickets/TicketsList',
 		type: 'POST',
 	},
+	venueDetails: {
+		url:'/api/tickets/venueDetails',
+		type: 'POST',
+	},
+	ticketShare: {
+		url:'/api/tickets/ticketShare',
+		type: 'POST',
+	},
+	ticketCreate: {
+		url:'/api/tickets/ticketCreate',
+		type: 'POST',
+	},
+	ticketConfirmed: {
+		url:'/api/tickets/ticketConfirmed',
+		type: 'POST',
+	},
 }
 export default requestObj;

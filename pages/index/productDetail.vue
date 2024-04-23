@@ -51,15 +51,19 @@ export default {
 	},
 	methods: {
 		goPage() {
-			if(!this.info.id) {
-				uni.showToast({
-					icon: "none",
-					title: "Not find ID",
-				});
-				return;
-			}
+			// return
+			// if(!this.info.id) {
+			// 	uni.showToast({
+			// 		icon: "none",
+			// 		title: "Not find ID",
+			// 	});
+			// 	return;
+			// }
+			// uni.navigateTo({
+			// 	url:'/pages/index/selectSeat'
+			// })
 			uni.navigateTo({
-				url: `/pages/index/selectSeat?id=${this.info.id}`,
+				url: `/pages/index/selectSeat?class_id=${this.info.nft_class_id}&goods_id=${this.info.id}`
 			});
 		},
 		scrollHandle(event) {

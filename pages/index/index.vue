@@ -66,7 +66,8 @@
 							</view>
 							<view class="product-info">
 								<view class="product-tit">{{ item.nft_name }}</view>
-								<view class="product-time">$ {{ item.money * 1 }}</view>
+								<view class="product-time">$ {{ item.formattedDateTime }}</view>
+								<view class="product-time" style="color: white;">$ {{ item.money * 1 }}</view>
 								<!-- TODO -->
 								<!-- <view class="product-desc">Jianye Times Cinema</view> -->
 							</view>
@@ -339,7 +340,7 @@ export default {
 		},
 		goProductDetail(item) {
 			uni.navigateTo({
-				url: `/pages/index/productDetail?id=${item.id}`,
+				url: `/pages/index/productDetail?id=${item.id}`
 			});
 		},
 		goPage(link) {
