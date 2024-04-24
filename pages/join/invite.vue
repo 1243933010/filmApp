@@ -60,11 +60,13 @@
 					</view>
 
 					<view class="invite-box-len">
-						<view class="invite-box-len-items">
-							<scroll-view class="scroll-view_H" style="white-space: nowrap" scroll-x="true" @scroll="scroll" scroll-left="120">
-								<view class="item" style="display: inline-block" v-for="(item, index) in inviteInfo.vip_user" :key="index">
-									<text style="padding-left: 5rpx">{{ item.invitations_number }}</text
-									><text>{{ $t("join.yq19") }}</text>
+						<view class="invite-box-len-items" v-if="inviteInfo.vip_user.length>0">
+							<scroll-view class="scroll-view_H" style="white-space: nowrap;" scroll-x="true"
+								@scroll="scroll" scroll-left="120">
+								<view class="item" style="display: inline-block;"
+									v-for="(item,index) in inviteInfo.vip_user" :key="index">
+									<text
+										style="padding-left: 5rpx;">{{item.invitations_number}}</text><text>{{ $t("join.yq19") }}</text>
 									<!-- <view class="arrow">
 										<image src="../../static/img/arrow.png" mode="widthFix"></image>
 									</view> -->

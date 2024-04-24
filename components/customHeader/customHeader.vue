@@ -53,6 +53,7 @@ export default {
 	},
 	methods: {
 		bindPickerChange: function (e) {
+			console.log(e.detail.value)
 			this.imgSrc = this.iconList[e.detail.value];
 			uni.setLocale(this.code[e.detail.value]);
 			this.$i18n.locale = this.code[e.detail.value];

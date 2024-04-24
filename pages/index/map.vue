@@ -12,13 +12,13 @@
 			<view class="map-scroll page-con">
 				<view class="product-info">
 					<view class="right-text">
-						<view class="time">Friday, January 26, 2024 at 1:08 a.m</view>
-						<view class="name">{{ info.nft_name }} Pacific Rim</view>
+						<view class="time">{{info.formattedDateTime}}</view>
+						<view class="name">{{ info.class_name }}</view>
 						<!-- TODO -->
-						<view class="address">这是表演的场地</view>
+						<!-- <view class="address">这是表演的场地</view> -->
 					</view>
 					<view class="left pic">
-						<img :src="info.nft_img" mode="widthFix" class="img" />
+						<img :src="info.inside_img" mode="widthFix" class="img" />
 					</view>
 				</view>
 				
@@ -31,9 +31,9 @@
 						</view>
 						<view class="right-text">
 						<!-- TODO -->
-							<view class="address-name">大通中心</view>
-							<view class="address-num">16街 300号</view>
-							<view class="address-en">Jianye Times Cinema</view>
+							<view class="address-name">{{info.address_name}}</view>
+							<view class="address-num">{{info.address_desc}}</view>
+							<view class="address-en">{{info.address_detail}}</view>
 						</view>
 					</view>
 				</view>
@@ -44,9 +44,9 @@
 			<view class="popup-container">
 				<!-- TODO -->
 				<view class="popup-tit">分享</view>
-				<view class="popup-content" style="max-width: 100%;">https://www.iconfont.cn/search/index?searchType=icon&q=%E5%9C%B0%E5%9B%BE&page=2&fromCollection=-1</view>
+				<view class="popup-content" style="max-width: 100%;">{{ticketShareInfo.invitation_url}}</view>
 				<!-- TODO -->
-				<view class="popup-close-btn" @click="$refs.popup.close()">复制链接</view>
+				<view class="popup-close-btn" @click="copyText">复制链接</view>
 			</view>
 		</uni-popup>
 	</view>
@@ -54,6 +54,7 @@
 
 <script>
 import hxNavbar from "@/components/hx-navbar.vue";
+import { $request, url as requestUrl } from "@/utils/request";
 export default {
 	name: "右上角场地详情",
 	components: {
@@ -61,10 +62,12 @@ export default {
 	},
 	data() {
 		return {
-			productId: 1,
+			// productId: 1,
 			info: {},
 			headerBg: false,
-			numList: 10,
+			// numList: 10,
+			ticketShareInfo:{},
+			detailObj:{}
 		};
 	},
 	computed: {
@@ -78,6 +81,20 @@ export default {
 			};
 		},
 	},
+	onLoad(e){
+		console.log(e)
+		this.detailObj = e;
+		let token = localStorage.getItem("token");
+		if(!token){
+			if(e.invitation_code){
+				uni.reLaunch({
+					url:`/pages/login/mobileRegion?invitation_code=${e.invitation_code}`
+				})
+			}
+		}else{
+			this.getDetail(e.class_id)
+		}
+	},
 	methods: {
 		scrollHandle(event) {
 			const { scrollTop } = event.detail;
@@ -87,9 +104,9 @@ export default {
 				this.headerBg = false;
 			}
 		},
-		async getDetail(id) {
-			let res = await $request("nftDeail", { nft_id: id });
-			// console.log(res);
+		async getDetail(class_id) {
+			let res = await $request("venueDetails", { class_id });
+			console.log(res);
 			if (res.data.code === 0) {
 				this.info = res.data.data;
 				return;
@@ -99,8 +116,20 @@ export default {
 				title: res.data.msg,
 			});
 		},
-		openDialog() {
-			this.$refs.popup.open("center");
+		async openDialog() {
+			
+			let res = await $request("ticketShare", {class_id:this.detailObj.class_id});
+			console.log(res);
+			if (res.data.code === 0) {
+				this.ticketShareInfo = res.data.data;
+				this.$refs.popup.open("center");
+				return;
+			}
+			
+		},
+		copyText(){
+			uni.setClipboardData({data:this.ticketShareInfo.invitation_url})
+			this.$refs.popup.close()
 		}
 	},
 };

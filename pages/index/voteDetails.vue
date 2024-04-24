@@ -12,20 +12,20 @@
 			<view class="map-scroll page-con">
 				<view class="product-info">
 					<view class="right-text">
-						<view class="time">Friday, January 26, 2024 at 1:08 a.m</view>
-						<view class="name">{{ info.nft_name }} Pacific Rim</view>
+						<view class="time">{{info.ticketInfo.formattedDateTime}}</view>
+						<view class="name">{{ info.classInfo.class_name }} </view>
 						<!-- TODO -->
-						<view class="address">这是表演的场地</view>
+						<!-- <view class="address">这是表演的场地</view> -->
 					</view>
 					<view class="left pic">
-						<img :src="info.nft_img" mode="widthFix" class="img" />
+						<img :src="info.classInfo.class_img" mode="widthFix" class="img" />
 					</view>
 				</view>
 				
 				<view class="tips">
 					<view class="line"></view>
 					<!-- TODO -->
-					<text class="text">2张门票</text>
+					<text class="text">{{info.ticketInfo.buy_num}}张门票</text>
 					<view class="line"></view>
 				</view>
 				
@@ -36,50 +36,50 @@
 						<view class="cinema-name">门票信息</view>
 						<view class="vote-position">
 							<!-- TODO -->
-							<view class="row-num">Orchestra Stalls</view>
+							<view class="row-num">测试1</view>
 						</view>
 						<!-- TODO -->
-						<view class="pending red-text">第四排丨座位27-28</view>
-						<view class="pending red-text">票面价值：每张票 50.00元</view>
+						<view class="pending red-text">{{info.ticketInfo.platoon}}丨座位{{info.ticketInfo.seat}}</view>
+						<view class="pending red-text">票面价值：每张票 {{info.ticketInfo.fares}}元</view>
 					</view>
-					<view class="vote-price red-text">39.00</view>
+					<view class="vote-price red-text">{{info.ticketInfo.fares*info.ticketInfo.buy_num}}</view>
 				</view>
 				
 				<view class="label-list">
 					<view class="label-text">
 						<!-- TODO -->
 						<view class="label">门票数量</view>
-						<view class="text">2张门票</view>
+						<view class="text">{{info.ticketInfo.buy_num}}张门票</view>
 					</view>
 					
 					<view class="label-text">
 						<!-- TODO -->
 						<view class="label">取票方式</view>
-						<view class="text">2即时下载 数分钟内即可下载和打印</view>
+						<view class="text">即时下载 数分钟内即可下载和打印</view>
 					</view>
 					
 					<view class="label-text">
 						<!-- TODO -->
 						<view class="label">小计</view>
-						<view class="text red-text">101.19</view>
+						<view class="text red-text">0</view>
 					</view>
 					
 					<view class="label-text">
 						<!-- TODO -->
 						<view class="label">票价</view>
-						<view class="text">2张丨39.00元</view>
+						<view class="text">{{info.ticketInfo.buy_num}}张丨{{info.ticketInfo.fares}}元</view>
 					</view>
 					
 					<view class="label-text">
 						<!-- TODO -->
 						<view class="label">服务费（估计数）</view>
-						<view class="text">2张丨967</view>
+						<view class="text">{{info.ticketInfo.buy_num}}张丨11111</view>
 					</view>
 					
 					<view class="label-text">
 						<!-- TODO -->
 						<view class="label">该剧院场地估计税收</view>
-						<view class="text">3.86</view>
+						<view class="text">111</view>
 					</view>
 				</view>
 				
@@ -96,7 +96,7 @@
 				</view>
 				
 				<!-- TODO -->
-				<view class="btn-box">去结账</view>
+				<view class="btn-box" @click="payHandle">去结账</view>
 			</view>
 		</scroll-view>
 		
@@ -114,6 +114,10 @@
 
 <script>
 import hxNavbar from "@/components/hx-navbar.vue";
+import {
+		$request,
+		url as requestUrl
+	} from "@/utils/request";
 export default {
 	name: "详情 - 3",
 	components: {
@@ -121,24 +125,49 @@ export default {
 	},
 	data() {
 		return {
-			productId: 1,
-			info: {},
+			info: {
+				classInfo:{
+					
+				},
+				ticketInfo:{
+					
+				},
+				ticketRule:''
+			},
 			headerBg: false,
-			numList: 10,
+			detailInfo:{}
 		};
 	},
 	computed: {
 		config() {
 			return {
 				// TODO
-				title: "Pacific Rim",
+				title: "票务信息",
 				color: "#ffffff",
 				backgroundColor: "transparent",
-				rightSlot: true,
+				// rightSlot: true,
 			};
 		},
 	},
+	onLoad(e) {
+		this.detailInfo = e;
+		this.getDetail(e.ticket_id);
+	},
 	methods: {
+		async payHandle(){
+			let res = await $request('ordersRequest',{...this.detailInfo})
+			
+			uni.showToast({
+				icon: "none",
+				title: res.data.msg,
+			});
+			if (res.data.code === 0) {
+				setTimeout(()=>{
+					uni.navigateBack({delta:1})
+				},1000)
+				return;
+			}
+		},
 		scrollHandle(event) {
 			const { scrollTop } = event.detail;
 			if (scrollTop >= 50) {
@@ -147,8 +176,8 @@ export default {
 				this.headerBg = false;
 			}
 		},
-		async getDetail(id) {
-			let res = await $request("nftDeail", { nft_id: id });
+		async getDetail(ticket_id) {
+			let res = await $request("ticketConfirmed", { ticket_id });
 			// console.log(res);
 			if (res.data.code === 0) {
 				this.info = res.data.data;
