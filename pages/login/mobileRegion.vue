@@ -41,7 +41,7 @@
 						<!-- TODO -->
 						<button class="button login-btn" :disabled="!(formData.mobile && formData.password && formData.invitation_code)" @click="region">注册</button>
 						<!-- TODO -->
-						<button class="button region-btn" @click="goPage('/pages/login/forgetEmailPassword')">
+						<button class="button region-btn" @click="goPage('/pages/login/region')">
 							<text>邮箱注册</text>
 						</button>
 						<!-- TODO -->
@@ -91,7 +91,7 @@ export default {
 	methods: {
 		goPage(url) {
 			uni.navigateTo({
-				url,
+				url:`${url}?invitation_code=${this.formData.invitation_code}`,
 			});
 		},
 		scrollHandle(event) {

@@ -81,8 +81,8 @@ export default {
 			isMember: true,
 			formData: {
 				login_type: "0",
-				mobile: "18512345678",
-				password: "123456",
+				mobile: "", //18512345678
+				password: "", //123456
 				country_code: "+86", // 手机前缀
 			},
 			headerBg: false

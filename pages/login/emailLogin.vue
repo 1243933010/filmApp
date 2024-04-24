@@ -80,8 +80,8 @@
 				isMember: true,
 				formData: {
 					login_type: '1',
-					email: "163123456@qq.com",
-					password: "123456",
+					email: "", //163123456@qq.com
+					password: "", //123456
 				},
 				headerBg: false
 			};
