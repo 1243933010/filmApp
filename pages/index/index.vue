@@ -528,6 +528,11 @@ export default {
 					background-color: #e8e8e8;
 					position: relative;
 					
+					.img {
+						height: 300rpx;
+						object-fit: cover;
+					}
+					
 					.like-price {
 						position: absolute;
 						left: 6rpx;
