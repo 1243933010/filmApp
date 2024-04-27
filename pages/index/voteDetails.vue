@@ -36,10 +36,10 @@
 						<view class="cinema-name">门票信息</view>
 						<view class="vote-position">
 							<!-- TODO -->
-							<view class="row-num">测试1</view>
+							<!-- <view class="row-num">测试1</view> -->
 						</view>
 						<!-- TODO -->
-						<view class="pending red-text">{{info.ticketInfo.platoon}}丨座位{{info.ticketInfo.seat}}</view>
+						<view class="pending red-text">第{{info.ticketInfo.platoon}}排丨座位{{info.ticketInfo.seat}}</view>
 						<view class="pending red-text">票面价值：每张票 {{info.ticketInfo.fares}}元</view>
 					</view>
 					<view class="vote-price red-text">{{info.ticketInfo.fares*info.ticketInfo.buy_num}}</view>
@@ -73,13 +73,13 @@
 					<view class="label-text">
 						<!-- TODO -->
 						<view class="label">服务费（估计数）</view>
-						<view class="text">{{info.ticketInfo.buy_num}}张丨11111</view>
+						<view class="text">{{info.ticketInfo.buy_num}}张丨0</view>
 					</view>
 					
 					<view class="label-text">
 						<!-- TODO -->
 						<view class="label">该剧院场地估计税收</view>
-						<view class="text">111</view>
+						<view class="text">0</view>
 					</view>
 				</view>
 				
@@ -87,13 +87,13 @@
 				<view class="desc-text">我们的服务包括运费和增值税，价格由经销商确定，可能高于实际价值，每张票面值50.00</view>
 				<view class="desc-text">如果活动按计划进行，但您的门票被取消或无法进入会场，StubHub的FanProtect@保证会为您提供保障。</view>
 				
-				<view class="tag-list">
-					<!-- TODO -->
+				<!-- <view class="tag-list">
+					
 					<view class="tag-item">支付方式</view>
 					<view class="tag-item">支付方式</view>
 					<view class="tag-item">支付方式</view>
 					<view class="tag-item">支付方式</view>
-				</view>
+				</view> -->
 				
 				<!-- TODO -->
 				<view class="btn-box" @click="payHandle">去结账</view>

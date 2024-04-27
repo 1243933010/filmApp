@@ -41,7 +41,7 @@
 					<view class="vote-item" v-for="(item,index) in ticketsInfo.tickets_data" :key="index">
 						<view class="line"></view>
 						<view class="vote-info">
-							<view class="cinema-name">{{item.shore}}s</view>
+							<view class="cinema-name">{{item.shore}}</view>
 							<view class="vote-position">
 								<!-- TODO -->
 								<view class="row-num">第{{item.platoon}}排</view>
@@ -91,7 +91,7 @@
 			// console.log(e)
 			this.paramsDetail = e;
 			this.class_id = e.class_id;
-			this.getTicketsList()
+			
 		},
 		computed: {
 			config() {
@@ -104,6 +104,9 @@
 					
 				};
 			},
+		},
+		onShow(){
+			this.getTicketsList()
 		},
 		methods: {
 			async getTicketsList() {
